@@ -1,0 +1,28 @@
+---
+title: "Pipeline management with Snakemake"
+subtitle: "Section for Hologenomics Workshop"
+author:
+  - Antton Alberdi^[University of Copenhagen, ostaizka.aizpurua@sund.ku.dk]
+date: "Last update: `r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+url: https://alberdilab.github.io/snakemake_workshop
+description: |
+  Workshop tutorial.
+link-citations: yes
+github-repo: alberdilab/snakemake_workshop
+---
+
+```{r knitr_opts, echo=FALSE}
+knitr::opts_chunk$set(
+    class.source = "script-source",
+    class.output = "script-output",
+    comment = NA)
+```
+
+# Introduction
+
+This is the template for the course contents.
+
+
