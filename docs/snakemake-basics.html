@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Pipeline management with Snakemake</title>
+  <title>Chapter 3 Snakemake basics | Pipeline management with Snakemake</title>
   <meta name="description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Pipeline management with Snakemake" />
+  <meta property="og:title" content="Chapter 3 Snakemake basics | Pipeline management with Snakemake" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="github-repo" content="alberdilab/snakemake_workshop" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Pipeline management with Snakemake" />
+  <meta name="twitter:title" content="Chapter 3 Snakemake basics | Pipeline management with Snakemake" />
   
   <meta name="twitter:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="getting-ready.html"/>
+<link rel="prev" href="getting-ready.html"/>
+<link rel="next" href="expanding-your-workflow.html"/>
 
 
 
@@ -2120,65 +2120,219 @@ color: #a52929;
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Pipeline management with Snakemake</h1>
-<h2 class="subtitle"><em>Section for Hologenomics Workshop</em></h2>
-<p class="author"><em>Antton Alberdi<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></em></p>
-<p class="date"><em>Last update: 2025-08-17</em></p>
-</div>
-<div id="introduction" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><strong>Welcome to the Snakemake Workshop!</strong></p>
-<p>In this session, we’ll explore how Snakemake can help you build scalable, reproducible, and automated workflows for data analysis. You’ll learn how to define tasks as rules, manage dependencies, and take full advantage of parallel execution on a high-performance cluster. By the end, you’ll be able to design workflows that are not only efficient, but also easy to share and reproduce.</p>
-<div id="what-is-snakemake" class="section level2 hasAnchor" number="1.1">
-<h2><span class="header-section-number">1.1</span> What is Snakemake?<a href="index.html#what-is-snakemake" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Snakemake is a workflow management system that helps you automate and organize complex data processing tasks. Instead of manually running each step of an analysis in the correct order, you describe what needs to be done, the inputs it requires, and the outputs it should produce. Snakemake then determines the correct execution order, runs tasks in parallel where possible, and ensures that only the necessary steps are re-run when data or code changes.</p>
-<p>This approach makes your work more efficient, reproducible, and less prone to errors, whether you are working on a single computer or a high-performance computing cluster. In simple terms, it is like providing your computer with a detailed recipe: each step knows exactly which ingredients it needs, what it produces, and when it needs to be executed.</p>
-</div>
-<div id="why-workflow-automation-matters" class="section level2 hasAnchor" number="1.2">
-<h2><span class="header-section-number">1.2</span> Why Workflow Automation Matters<a href="index.html#why-workflow-automation-matters" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="snakemake-basics" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Snakemake basics<a href="snakemake-basics.html#snakemake-basics" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Snakemake is a <strong>rule-based</strong> workflow system. Each rule says:</p>
 <ul>
-<li><strong>Reproducibility:</strong> In research and data-driven projects, results must be repeatable. Automation ensures that the same steps produce the same results every time, regardless of who runs them or where they are run.</li>
-<li><strong>Efficiency:</strong> Automated workflows save time by eliminating repetitive manual commands and by re-running only the parts of an analysis that have changed.</li>
-<li><strong>Error Reduction:</strong> Manual execution increases the risk of skipping steps, running them in the wrong order, or using outdated files. Automation enforces the correct sequence and data flow.</li>
-<li><strong>Scalability:</strong> As projects grow, the number of steps and datasets can become unmanageable. Automated workflows make it practical to handle dozens or hundreds of tasks reliably.</li>
-<li><strong>Documentation by Design:</strong> A well-defined workflow doubles as a detailed record of the entire analysis process, which is invaluable for collaboration, review, and publication.</li>
+<li>What it produces (the output)</li>
+<li>What it needs to produce that (the input)</li>
+<li>How to produce it (the command + parameters)</li>
 </ul>
-</div>
-<div id="problems-snakemake-solves" class="section level2 hasAnchor" number="1.3">
-<h2><span class="header-section-number">1.3</span> Problems Snakemake Solves<a href="index.html#problems-snakemake-solves" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Snakemake then figures out the right order to run everything and which parts can run at the same time.</p>
+<div id="the-snakefile" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> The Snakefile<a href="snakemake-basics.html#the-snakefile" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The Snakefile is the heart of any Snakemake workflow. It is a plain text file—usually named <code>Snakefile</code> (with no file extension)—written in a <strong>mix of Snakemake’s workflow syntax and regular Python code</strong>.</p>
+<p>It serves as:</p>
 <ul>
-<li><strong>Managing Complex Dependenciess:</strong> Snakemake automatically determines which steps depend on which others and runs them in the right order without manual intervention.</li>
-<li><strong>Avoiding Unnecessary Work:</strong> It detects when inputs or code have changed and re-runs only the affected steps, saving both time and computing resources.</li>
-<li><strong>Portability Across Systems:</strong> The same workflow can run unchanged on a laptop, a high-performance computing cluster, or even the cloud.</li>
-<li><strong>Parallel Execution Without Extra Effort:</strong> Snakemake can execute independent tasks simultaneously, using all available cores or cluster nodes.</li>
-<li><strong>Reproducibility and Transparency:</strong> By defining workflows in a readable text format, Snakemake makes analyses easy to share, inspect, and reproduce years later.</li>
+<li>A blueprint for your entire analysis pipeline</li>
+<li>A dependency map, describing what each step needs and produces</li>
+<li>An execution plan that Snakemake follows to run your tasks in the correct order</li>
 </ul>
+<p>The Snakefile is human-readable, version-controllable (e.g., with Git), and shareable.</p>
 </div>
-<div id="relevant-links" class="section level2 hasAnchor" number="1.4">
-<h2><span class="header-section-number">1.4</span> Relevant links<a href="index.html#relevant-links" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="the-rules" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> The rules<a href="snakemake-basics.html#the-rules" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The Snakefile contains (at least) the rules that define the pipeline.</p>
+<div id="the-all-rule" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> The ALL rule<a href="snakemake-basics.html#the-all-rule" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>You typically start by specifying what you ultimately want to produce (plots, tables, reports) in the <code>all</code> rule:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb16-1"><a href="snakemake-basics.html#cb16-1" tabindex="-1"></a><span class="ex">rule</span> all:</span>
+<span id="cb16-2"><a href="snakemake-basics.html#cb16-2" tabindex="-1"></a>  <span class="ex">input:</span> </span>
+<span id="cb16-3"><a href="snakemake-basics.html#cb16-3" tabindex="-1"></a>    <span class="st">&quot;results/plot.png&quot;</span></span></code></pre></div>
+<p>In this example, the pipeline will yield a <code>plot.png</code> file in the <code>results</code> directory. But you can also define multiple final outputs:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb17-1"><a href="snakemake-basics.html#cb17-1" tabindex="-1"></a><span class="ex">rule</span> all:</span>
+<span id="cb17-2"><a href="snakemake-basics.html#cb17-2" tabindex="-1"></a>  <span class="ex">input:</span> </span>
+<span id="cb17-3"><a href="snakemake-basics.html#cb17-3" tabindex="-1"></a>    <span class="st">&quot;results/plot.png&quot;</span><span class="ex">,</span></span>
+<span id="cb17-4"><a href="snakemake-basics.html#cb17-4" tabindex="-1"></a>    <span class="st">&quot;results/stats.tsv&quot;</span></span></code></pre></div>
+</div>
+<div id="a-regular-rule" class="section level3 hasAnchor" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> A regular rule<a href="snakemake-basics.html#a-regular-rule" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The regular rules define the path to reach the final outputs. Each rule at least must have a:</p>
 <ul>
-<li>Official Snakemake website: <a href="https://snakemake.github.io" class="uri">https://snakemake.github.io</a></li>
-<li>Snakemake documentation: <a href="https://snakemake.readthedocs.io" class="uri">https://snakemake.readthedocs.io</a></li>
-<li>Tutorial with examples: <a href="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html" class="uri">https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html</a></li>
-<li>Workflow examples: <a href="https://github.com/snakemake-workflows" class="uri">https://github.com/snakemake-workflows</a></li>
+<li><strong>Name:</strong> e.g., rule clean_data.</li>
+<li><strong>Input:</strong> files or results needed.</li>
+<li><strong>Output:</strong> files the step produces.</li>
+<li><strong>Command:</strong> the command or script that performs the transformation.</li>
 </ul>
+<p>This rule, for example, outputs the row counts of a file to another file:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb18-1"><a href="snakemake-basics.html#cb18-1" tabindex="-1"></a><span class="ex">rule</span> count_lines:</span>
+<span id="cb18-2"><a href="snakemake-basics.html#cb18-2" tabindex="-1"></a>  <span class="ex">input:</span></span>
+<span id="cb18-3"><a href="snakemake-basics.html#cb18-3" tabindex="-1"></a>    <span class="st">&quot;data/sample1.txt&quot;</span></span>
+<span id="cb18-4"><a href="snakemake-basics.html#cb18-4" tabindex="-1"></a>  <span class="ex">output:</span></span>
+<span id="cb18-5"><a href="snakemake-basics.html#cb18-5" tabindex="-1"></a>    <span class="st">&quot;results/sample1.txt&quot;</span></span>
+<span id="cb18-6"><a href="snakemake-basics.html#cb18-6" tabindex="-1"></a>  <span class="ex">shell:</span></span>
+<span id="cb18-7"><a href="snakemake-basics.html#cb18-7" tabindex="-1"></a>    <span class="st">&quot;wc -l {input} | awk &#39;{{print </span><span class="va">$1</span><span class="st">}}&#39; &gt; {output}&quot;</span></span></code></pre></div>
+<div id="name" class="section level4 hasAnchor" number="3.2.2.1">
+<h4><span class="header-section-number">3.2.2.1</span> Name<a href="snakemake-basics.html#name" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>It must be unique, and ideally informative, as it will be used to identify the rules in the overview files, logs, etc. If you use repeated names, snakemake will complain and stop working.</p>
+</div>
+<div id="input-and-output" class="section level4 hasAnchor" number="3.2.2.2">
+<h4><span class="header-section-number">3.2.2.2</span> Input and output<a href="snakemake-basics.html#input-and-output" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Snakemake lets you describe input and output files in several convenient ways.</p>
+<div id="single-file" class="section level5 hasAnchor" number="3.2.2.2.1">
+<h5><span class="header-section-number">3.2.2.2.1</span> Single file<a href="snakemake-basics.html#single-file" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb19-1"><a href="snakemake-basics.html#cb19-1" tabindex="-1"></a><span class="ex">rule</span> count_lines:</span>
+<span id="cb19-2"><a href="snakemake-basics.html#cb19-2" tabindex="-1"></a>  <span class="ex">input:</span> <span class="st">&quot;data/sample1.txt&quot;</span></span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb20-1"><a href="snakemake-basics.html#cb20-1" tabindex="-1"></a><span class="ex">rule</span> count_lines:</span>
+<span id="cb20-2"><a href="snakemake-basics.html#cb20-2" tabindex="-1"></a>  <span class="ex">input:</span> </span>
+<span id="cb20-3"><a href="snakemake-basics.html#cb20-3" tabindex="-1"></a>    <span class="st">&quot;data/sample1.txt&quot;</span></span>
+<span id="cb20-4"><a href="snakemake-basics.html#cb20-4" tabindex="-1"></a>  <span class="ex">output:</span> <span class="st">&quot;refs/genome.fa.fai&quot;</span></span>
+<span id="cb20-5"><a href="snakemake-basics.html#cb20-5" tabindex="-1"></a>  <span class="ex">shell:</span>  <span class="st">&quot;samtools faidx {input}&quot;</span></span></code></pre></div>
+</div>
+<div id="multiple-unordered-files" class="section level5 hasAnchor" number="3.2.2.2.2">
+<h5><span class="header-section-number">3.2.2.2.2</span> Multiple unordered files<a href="snakemake-basics.html#multiple-unordered-files" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb21"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb21-1"><a href="snakemake-basics.html#cb21-1" tabindex="-1"></a><span class="ex">rule</span> count_lines:</span>
+<span id="cb21-2"><a href="snakemake-basics.html#cb21-2" tabindex="-1"></a>  <span class="ex">input:</span>  [<span class="st">&quot;results/a.counts.txt&quot;</span>, <span class="st">&quot;results/b.counts.txt&quot;</span>]</span>
+<span id="cb21-3"><a href="snakemake-basics.html#cb21-3" tabindex="-1"></a>  <span class="ex">output:</span> <span class="st">&quot;results/merged.tsv&quot;</span></span>
+<span id="cb21-4"><a href="snakemake-basics.html#cb21-4" tabindex="-1"></a>  <span class="ex">shell:</span>  <span class="st">&quot;cat {input} &gt; {output}&quot;</span></span></code></pre></div>
+<p>In this case, <code>{input}</code> expands to a space-separated list, this example resulting in:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb22-1"><a href="snakemake-basics.html#cb22-1" tabindex="-1"></a><span class="st">&quot;cat results/a.counts.txt results/b.counts.txt &gt; results/merged.tsv&quot;</span></span></code></pre></div>
+</div>
+<div id="named-children-recommended-for-clarity" class="section level5 hasAnchor" number="3.2.2.2.3">
+<h5><span class="header-section-number">3.2.2.2.3</span> Named children (recommended for clarity)<a href="snakemake-basics.html#named-children-recommended-for-clarity" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb23"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb23-1"><a href="snakemake-basics.html#cb23-1" tabindex="-1"></a><span class="ex">rule</span> count_lines:</span>
+<span id="cb23-2"><a href="snakemake-basics.html#cb23-2" tabindex="-1"></a>  <span class="ex">input:</span></span>
+<span id="cb23-3"><a href="snakemake-basics.html#cb23-3" tabindex="-1"></a>    <span class="va">read1</span><span class="op">=</span><span class="st">&quot;reads/{sample}_R1.fastq.gz&quot;</span>,</span>
+<span id="cb23-4"><a href="snakemake-basics.html#cb23-4" tabindex="-1"></a>    <span class="va">read2</span><span class="op">=</span><span class="st">&quot;reads/{sample}_R2.fastq.gz&quot;</span>,</span>
+<span id="cb23-5"><a href="snakemake-basics.html#cb23-5" tabindex="-1"></a>    <span class="va">ref</span><span class="op">=</span><span class="st">&quot;refs/genome.fa&quot;</span></span>
+<span id="cb23-6"><a href="snakemake-basics.html#cb23-6" tabindex="-1"></a>  <span class="ex">output:</span></span>
+<span id="cb23-7"><a href="snakemake-basics.html#cb23-7" tabindex="-1"></a>    <span class="va">bam</span><span class="op">=</span><span class="st">&quot;results/{sample}.bam&quot;</span></span>
+<span id="cb23-8"><a href="snakemake-basics.html#cb23-8" tabindex="-1"></a>  <span class="ex">shell:</span></span>
+<span id="cb23-9"><a href="snakemake-basics.html#cb23-9" tabindex="-1"></a>    <span class="st">&quot;bwa mem {input.ref} {input.read1} {input.read2} | &quot;</span></span>
+<span id="cb23-10"><a href="snakemake-basics.html#cb23-10" tabindex="-1"></a>    <span class="st">&quot;samtools view -b -o {output.bam} 2&gt; {log.err}&quot;</span></span></code></pre></div>
+<p>Use dot notation like <code>{input.read1}</code>, <code>{output.bam}</code>, etc.</p>
+</div>
+</div>
+<div id="command" class="section level4 hasAnchor" number="3.2.2.3">
+<h4><span class="header-section-number">3.2.2.3</span> Command<a href="snakemake-basics.html#command" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Snakemake gives you several ways to express the command of a rule.</p>
+<div id="shell" class="section level5 hasAnchor" number="3.2.2.3.1">
+<h5><span class="header-section-number">3.2.2.3.1</span> Shell<a href="snakemake-basics.html#shell" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p>The most common one is a regular shell command:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb24-1"><a href="snakemake-basics.html#cb24-1" tabindex="-1"></a><span class="ex">rule</span> count_lines:</span>
+<span id="cb24-2"><a href="snakemake-basics.html#cb24-2" tabindex="-1"></a>  <span class="ex">input:</span></span>
+<span id="cb24-3"><a href="snakemake-basics.html#cb24-3" tabindex="-1"></a>    <span class="st">&quot;data/sample1.txt&quot;</span></span>
+<span id="cb24-4"><a href="snakemake-basics.html#cb24-4" tabindex="-1"></a>  <span class="ex">output:</span></span>
+<span id="cb24-5"><a href="snakemake-basics.html#cb24-5" tabindex="-1"></a>    <span class="st">&quot;results/sample1.txt&quot;</span></span>
+<span id="cb24-6"><a href="snakemake-basics.html#cb24-6" tabindex="-1"></a>  <span class="ex">shell:</span></span>
+<span id="cb24-7"><a href="snakemake-basics.html#cb24-7" tabindex="-1"></a>    <span class="st">&quot;wc -l {input} | awk &#39;{{print </span><span class="va">$1</span><span class="st">}}&#39; &gt; {output}&quot;</span></span></code></pre></div>
+<p>The command definition can also be more complex, and expressed in multiple lines:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb25-1"><a href="snakemake-basics.html#cb25-1" tabindex="-1"></a><span class="ex">rule</span> count_lines:</span>
+<span id="cb25-2"><a href="snakemake-basics.html#cb25-2" tabindex="-1"></a>  <span class="ex">input:</span></span>
+<span id="cb25-3"><a href="snakemake-basics.html#cb25-3" tabindex="-1"></a>    <span class="st">&quot;data/sample1.txt&quot;</span></span>
+<span id="cb25-4"><a href="snakemake-basics.html#cb25-4" tabindex="-1"></a>  <span class="ex">output:</span></span>
+<span id="cb25-5"><a href="snakemake-basics.html#cb25-5" tabindex="-1"></a>    <span class="st">&quot;results/sample1.txt&quot;</span></span>
+<span id="cb25-6"><a href="snakemake-basics.html#cb25-6" tabindex="-1"></a>  <span class="ex">shell:</span></span>
+<span id="cb25-7"><a href="snakemake-basics.html#cb25-7" tabindex="-1"></a>    <span class="st">&quot;&quot;&quot;</span></span>
+<span id="cb25-8"><a href="snakemake-basics.html#cb25-8" tabindex="-1"></a><span class="st">    {add more complex command}</span></span>
+<span id="cb25-9"><a href="snakemake-basics.html#cb25-9" tabindex="-1"></a><span class="st">    &quot;&quot;&quot;</span></span></code></pre></div>
+</div>
+<div id="script" class="section level5 hasAnchor" number="3.2.2.3.2">
+<h5><span class="header-section-number">3.2.2.3.2</span> Script<a href="snakemake-basics.html#script" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p>Or can run python scripts instead:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb26-1"><a href="snakemake-basics.html#cb26-1" tabindex="-1"></a><span class="ex">rule</span> count_lines:</span>
+<span id="cb26-2"><a href="snakemake-basics.html#cb26-2" tabindex="-1"></a>  <span class="ex">input:</span></span>
+<span id="cb26-3"><a href="snakemake-basics.html#cb26-3" tabindex="-1"></a>    <span class="st">&quot;data/sample1.txt&quot;</span></span>
+<span id="cb26-4"><a href="snakemake-basics.html#cb26-4" tabindex="-1"></a>  <span class="ex">output:</span></span>
+<span id="cb26-5"><a href="snakemake-basics.html#cb26-5" tabindex="-1"></a>    <span class="st">&quot;results/sample1.txt&quot;</span></span>
+<span id="cb26-6"><a href="snakemake-basics.html#cb26-6" tabindex="-1"></a>  <span class="ex">script:</span> <span class="st">&quot;scripts/normalize.py&quot;</span></span></code></pre></div>
+</div>
+<div id="run" class="section level5 hasAnchor" number="3.2.2.3.3">
+<h5><span class="header-section-number">3.2.2.3.3</span> Run<a href="snakemake-basics.html#run" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p>Or an inline Python block</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb27-1"><a href="snakemake-basics.html#cb27-1" tabindex="-1"></a><span class="ex">rule</span> concat:</span>
+<span id="cb27-2"><a href="snakemake-basics.html#cb27-2" tabindex="-1"></a>    <span class="ex">input:</span>  [<span class="st">&quot;pieces/a.txt&quot;</span>, <span class="st">&quot;pieces/b.txt&quot;</span>]</span>
+<span id="cb27-3"><a href="snakemake-basics.html#cb27-3" tabindex="-1"></a>    <span class="ex">output:</span> <span class="st">&quot;all.txt&quot;</span></span>
+<span id="cb27-4"><a href="snakemake-basics.html#cb27-4" tabindex="-1"></a>    <span class="ex">run:</span></span>
+<span id="cb27-5"><a href="snakemake-basics.html#cb27-5" tabindex="-1"></a>        <span class="ex">with</span> open<span class="er">(</span><span class="va">output</span><span class="op">[</span><span class="dv">0</span><span class="op">]</span><span class="ex">,</span> <span class="st">&quot;w&quot;</span><span class="kw">)</span> <span class="fu">as</span> out:</span>
+<span id="cb27-6"><a href="snakemake-basics.html#cb27-6" tabindex="-1"></a>            <span class="cf">for</span> p <span class="kw">in</span> input:</span>
+<span id="cb27-7"><a href="snakemake-basics.html#cb27-7" tabindex="-1"></a>                <span class="ex">out.write</span><span class="er">(</span><span class="ex">open</span><span class="er">(</span><span class="ex">p</span><span class="kw">)</span><span class="fu">.read()</span><span class="kw">)</span></span></code></pre></div>
+</div>
+</div>
+<div id="child-arguments" class="section level4 hasAnchor" number="3.2.2.4">
+<h4><span class="header-section-number">3.2.2.4</span> Child arguments<a href="snakemake-basics.html#child-arguments" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+</div>
+</div>
+</div>
+<div id="linking-rules-together" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> Linking rules together<a href="snakemake-basics.html#linking-rules-together" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>One of Snakemake’s most powerful features is that you don’t need to manually tell it the order in which to run rules. Instead, Snakemake infers the correct sequence automatically by looking at:</p>
+<ul>
+<li>The output files of one rule</li>
+<li>The input files of another</li>
+</ul>
+<p>When the output of one rule matches the input of another, Snakemake creates a connection between them—this connection is a dependency. Let’s see an example:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb28-1"><a href="snakemake-basics.html#cb28-1" tabindex="-1"></a><span class="ex">rule</span> all:</span>
+<span id="cb28-2"><a href="snakemake-basics.html#cb28-2" tabindex="-1"></a>    <span class="ex">input:</span> <span class="st">&quot;results/summary.txt&quot;</span></span>
+<span id="cb28-3"><a href="snakemake-basics.html#cb28-3" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="snakemake-basics.html#cb28-4" tabindex="-1"></a><span class="ex">rule</span> preprocess:</span>
+<span id="cb28-5"><a href="snakemake-basics.html#cb28-5" tabindex="-1"></a>    <span class="ex">input:</span> <span class="st">&quot;raw/data.csv&quot;</span></span>
+<span id="cb28-6"><a href="snakemake-basics.html#cb28-6" tabindex="-1"></a>    <span class="ex">output:</span> <span class="st">&quot;processed/data_clean.csv&quot;</span></span>
+<span id="cb28-7"><a href="snakemake-basics.html#cb28-7" tabindex="-1"></a>    <span class="ex">shell:</span> <span class="st">&quot;python scripts/clean_data.py {input} {output}&quot;</span></span>
+<span id="cb28-8"><a href="snakemake-basics.html#cb28-8" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="snakemake-basics.html#cb28-9" tabindex="-1"></a><span class="ex">rule</span> summarize:</span>
+<span id="cb28-10"><a href="snakemake-basics.html#cb28-10" tabindex="-1"></a>    <span class="ex">input:</span> <span class="st">&quot;processed/data_clean.csv&quot;</span></span>
+<span id="cb28-11"><a href="snakemake-basics.html#cb28-11" tabindex="-1"></a>    <span class="ex">output:</span> <span class="st">&quot;results/summary.txt&quot;</span></span>
+<span id="cb28-12"><a href="snakemake-basics.html#cb28-12" tabindex="-1"></a>    <span class="ex">shell:</span> <span class="st">&quot;python scripts/summarize.py {input} {output}&quot;</span></span></code></pre></div>
+</div>
+<div id="executing-the-pipeline" class="section level2 hasAnchor" number="3.4">
+<h2><span class="header-section-number">3.4</span> Executing the pipeline<a href="snakemake-basics.html#executing-the-pipeline" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The execution of the pipeline is very straightforward. From the command line, in the directory containing your Snakefile, just run:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb29-1"><a href="snakemake-basics.html#cb29-1" tabindex="-1"></a><span class="ex">snakemake</span></span></code></pre></div>
+<p>By default, Snakemake looks for a file named Snakefile in the current directory, or in the <code>workflow</code> directory, both with and without a capital S.</p>
+<ul>
+<li><code>snakefile</code></li>
+<li><code>Snakefile</code></li>
+<li><code>workflow/snakefile</code></li>
+<li><code>workflow/Snakefile</code></li>
+</ul>
+<p>It is also possible to define a different name for the snakefile, usually with the extension <code>.smk</code>. If so, you need to tell snakemake where the snakefile is:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb30-1"><a href="snakemake-basics.html#cb30-1" tabindex="-1"></a><span class="ex">snakemake</span> <span class="at">-s</span> mydirectory/mysnakefile.smk</span></code></pre></div>
+</div>
+<div id="previsualising-the-pipeline" class="section level2 hasAnchor" number="3.5">
+<h2><span class="header-section-number">3.5</span> Previsualising the pipeline<a href="snakemake-basics.html#previsualising-the-pipeline" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Before running a workflow, it is often helpful to preview what Snakemake will do. This allows you to verify that all dependencies are correctly linked, that no unexpected steps are included, and that your final targets are well defined. These tools are especially useful when developing or modifying workflows, ensuring that your Snakefile behaves as intended before committing computational resources.</p>
+<div id="dry-run" class="section level4 hasAnchor" number="3.5.0.1">
+<h4><span class="header-section-number">3.5.0.1</span> Dry run<a href="snakemake-basics.html#dry-run" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Shows the planned execution without actually running any commands. This lists all jobs that would be executed and their order.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb31-1"><a href="snakemake-basics.html#cb31-1" tabindex="-1"></a><span class="ex">snakemake</span> <span class="at">--dry-run</span></span></code></pre></div>
+</div>
+<div id="dag-directed-acyclic-graph-visualization" class="section level4 hasAnchor" number="3.5.0.2">
+<h4><span class="header-section-number">3.5.0.2</span> DAG (Directed Acyclic Graph) visualization<a href="snakemake-basics.html#dag-directed-acyclic-graph-visualization" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Generates a visual map of the workflow, illustrating how rules are connected. The resulting diagram helps you check for missing dependencies, unexpected branches, or redundant steps.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb32-1"><a href="snakemake-basics.html#cb32-1" tabindex="-1"></a><span class="ex">snakemake</span> <span class="at">--dag</span> <span class="kw">|</span> <span class="ex">dot</span> <span class="at">-Tpng</span> <span class="op">&gt;</span> dag.png</span></code></pre></div>
+</div>
+</div>
+<div id="exercise-1" class="section level2 hasAnchor" number="3.6">
+<h2><span class="header-section-number">3.6</span> Exercise 1<a href="snakemake-basics.html#exercise-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In the directory <code>exercise1</code>, you will find a data file and a snakefile with a few errors. Try to fix it to get the output file <code>counts.tsv</code> containing the following simple result:</p>
+<p><strong>counts.tsv</strong></p>
+<pre><code>7</code></pre>
+<!--
+- input file of count_lines is incorrect (it should be "data.tsv.gz")
+- shell of count_lines is missing the output file, so the result is printed to screen. Add "> {output}".
+-->
 
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="1">
-<li id="fn1"><p>University of Copenhagen, <a href="mailto:ostaizka.aizpurua@sund.ku.dk" class="email">ostaizka.aizpurua@sund.ku.dk</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="getting-ready.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="getting-ready.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="expanding-your-workflow.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script>/*! jQuery v3.6.0 | (c) OpenJS Foundation and other contributors | jquery.org/license */

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Pipeline management with Snakemake</title>
+  <title>Chapter 6 Advanced inputs | Pipeline management with Snakemake</title>
   <meta name="description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Pipeline management with Snakemake" />
+  <meta property="og:title" content="Chapter 6 Advanced inputs | Pipeline management with Snakemake" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="github-repo" content="alberdilab/snakemake_workshop" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Pipeline management with Snakemake" />
+  <meta name="twitter:title" content="Chapter 6 Advanced inputs | Pipeline management with Snakemake" />
   
   <meta name="twitter:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="getting-ready.html"/>
+<link rel="prev" href="advanced-rule-parameters.html"/>
+<link rel="next" href="checkpoints.html"/>
 
 
 
@@ -2120,65 +2120,61 @@ color: #a52929;
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Pipeline management with Snakemake</h1>
-<h2 class="subtitle"><em>Section for Hologenomics Workshop</em></h2>
-<p class="author"><em>Antton Alberdi<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></em></p>
-<p class="date"><em>Last update: 2025-08-17</em></p>
+<div id="advanced-inputs" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> Advanced inputs<a href="advanced-inputs.html#advanced-inputs" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="expansions" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Expansions<a href="advanced-inputs.html#expansions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Use <code>expand()</code> to build input lists for the all rule or aggregations.</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb60-1"><a href="advanced-inputs.html#cb60-1" tabindex="-1"></a><span class="ex">SAMPLES</span> = [<span class="st">&quot;S1&quot;</span>, <span class="st">&quot;S2&quot;</span>, <span class="st">&quot;S3&quot;</span>]</span>
+<span id="cb60-2"><a href="advanced-inputs.html#cb60-2" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="advanced-inputs.html#cb60-3" tabindex="-1"></a><span class="ex">rule</span> all:</span>
+<span id="cb60-4"><a href="advanced-inputs.html#cb60-4" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb60-5"><a href="advanced-inputs.html#cb60-5" tabindex="-1"></a>        <span class="fu">expand</span><span class="er">(</span><span class="st">&quot;qc/{sample}_fastqc.html&quot;</span><span class="ex">,</span> sample=SAMPLES<span class="kw">)</span></span></code></pre></div>
+<p>The above code results in:</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb61-1"><a href="advanced-inputs.html#cb61-1" tabindex="-1"></a><span class="ex">rule</span> all:</span>
+<span id="cb61-2"><a href="advanced-inputs.html#cb61-2" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb61-3"><a href="advanced-inputs.html#cb61-3" tabindex="-1"></a>        <span class="st">&quot;qc/S1_fastqc.html&quot;</span><span class="ex">,</span></span>
+<span id="cb61-4"><a href="advanced-inputs.html#cb61-4" tabindex="-1"></a>        <span class="st">&quot;qc/S2_fastqc.html&quot;</span><span class="ex">,</span></span>
+<span id="cb61-5"><a href="advanced-inputs.html#cb61-5" tabindex="-1"></a>        <span class="st">&quot;qc/S3_fastqc.html&quot;</span></span></code></pre></div>
 </div>
-<div id="introduction" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><strong>Welcome to the Snakemake Workshop!</strong></p>
-<p>In this session, we’ll explore how Snakemake can help you build scalable, reproducible, and automated workflows for data analysis. You’ll learn how to define tasks as rules, manage dependencies, and take full advantage of parallel execution on a high-performance cluster. By the end, you’ll be able to design workflows that are not only efficient, but also easy to share and reproduce.</p>
-<div id="what-is-snakemake" class="section level2 hasAnchor" number="1.1">
-<h2><span class="header-section-number">1.1</span> What is Snakemake?<a href="index.html#what-is-snakemake" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Snakemake is a workflow management system that helps you automate and organize complex data processing tasks. Instead of manually running each step of an analysis in the correct order, you describe what needs to be done, the inputs it requires, and the outputs it should produce. Snakemake then determines the correct execution order, runs tasks in parallel where possible, and ensures that only the necessary steps are re-run when data or code changes.</p>
-<p>This approach makes your work more efficient, reproducible, and less prone to errors, whether you are working on a single computer or a high-performance computing cluster. In simple terms, it is like providing your computer with a detailed recipe: each step knows exactly which ingredients it needs, what it produces, and when it needs to be executed.</p>
+<div id="pattern-building-helpers" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Pattern-building helpers<a href="advanced-inputs.html#pattern-building-helpers" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Use <code>glob_wildcards</code> to discover samples containing a certain pattern:</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb62-1"><a href="advanced-inputs.html#cb62-1" tabindex="-1"></a><span class="ex">from</span> snakemake.io import glob_wildcards</span>
+<span id="cb62-2"><a href="advanced-inputs.html#cb62-2" tabindex="-1"></a><span class="ex">SAMPLES</span> = glob_wildcards<span class="er">(</span><span class="st">&quot;reads/{sample}.fastq.gz&quot;</span><span class="kw">)</span><span class="ex">.sample</span></span>
+<span id="cb62-3"><a href="advanced-inputs.html#cb62-3" tabindex="-1"></a></span>
+<span id="cb62-4"><a href="advanced-inputs.html#cb62-4" tabindex="-1"></a><span class="ex">rule</span> all:</span>
+<span id="cb62-5"><a href="advanced-inputs.html#cb62-5" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb62-6"><a href="advanced-inputs.html#cb62-6" tabindex="-1"></a>        <span class="fu">expand</span><span class="er">(</span><span class="st">&quot;qc/{sample}_fastqc.html&quot;</span><span class="ex">,</span> sample=SAMPLES<span class="kw">)</span></span></code></pre></div>
+<p>Get a list of file names in the directory <code>reads</code> that end with <code>_1.fq.gz</code>:</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb63-1"><a href="advanced-inputs.html#cb63-1" tabindex="-1"></a><span class="ex">from</span> pathlib import Path</span>
+<span id="cb63-2"><a href="advanced-inputs.html#cb63-2" tabindex="-1"></a><span class="ex">SAMPLES</span> = sorted<span class="er">(</span><span class="ex">{f.stem.rsplit</span><span class="er">(</span><span class="st">&quot;_&quot;</span><span class="ex">,</span> 1<span class="kw">)</span><span class="ex">[0]</span> for f in Path<span class="er">(</span><span class="st">&quot;reads&quot;</span><span class="kw">)</span><span class="ex">.glob</span><span class="er">(</span><span class="st">&quot;*_1.fq.gz&quot;</span><span class="kw">)</span><span class="er">}</span><span class="kw">)</span></span>
+<span id="cb63-3"><a href="advanced-inputs.html#cb63-3" tabindex="-1"></a></span>
+<span id="cb63-4"><a href="advanced-inputs.html#cb63-4" tabindex="-1"></a><span class="ex">rule</span> all:</span>
+<span id="cb63-5"><a href="advanced-inputs.html#cb63-5" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb63-6"><a href="advanced-inputs.html#cb63-6" tabindex="-1"></a>        <span class="fu">expand</span><span class="er">(</span><span class="st">&quot;results/{sample}.tsv&quot;</span><span class="ex">,</span> sample=SAMPLES<span class="kw">)</span></span></code></pre></div>
 </div>
-<div id="why-workflow-automation-matters" class="section level2 hasAnchor" number="1.2">
-<h2><span class="header-section-number">1.2</span> Why Workflow Automation Matters<a href="index.html#why-workflow-automation-matters" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><strong>Reproducibility:</strong> In research and data-driven projects, results must be repeatable. Automation ensures that the same steps produce the same results every time, regardless of who runs them or where they are run.</li>
-<li><strong>Efficiency:</strong> Automated workflows save time by eliminating repetitive manual commands and by re-running only the parts of an analysis that have changed.</li>
-<li><strong>Error Reduction:</strong> Manual execution increases the risk of skipping steps, running them in the wrong order, or using outdated files. Automation enforces the correct sequence and data flow.</li>
-<li><strong>Scalability:</strong> As projects grow, the number of steps and datasets can become unmanageable. Automated workflows make it practical to handle dozens or hundreds of tasks reliably.</li>
-<li><strong>Documentation by Design:</strong> A well-defined workflow doubles as a detailed record of the entire analysis process, which is invaluable for collaboration, review, and publication.</li>
-</ul>
+<div id="wildcards" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Wildcards<a href="advanced-inputs.html#wildcards" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb64"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb64-1"><a href="advanced-inputs.html#cb64-1" tabindex="-1"></a><span class="ex">rule</span> align:</span>
+<span id="cb64-2"><a href="advanced-inputs.html#cb64-2" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb64-3"><a href="advanced-inputs.html#cb64-3" tabindex="-1"></a>        <span class="ex">lambda</span> wc: [f<span class="st">&quot;reads/{wc.sample}_R1.fastq.gz&quot;</span>,</span>
+<span id="cb64-4"><a href="advanced-inputs.html#cb64-4" tabindex="-1"></a>                    <span class="ex">f</span><span class="st">&quot;reads/{wc.sample}_R2.fastq.gz&quot;</span><span class="ex">]</span></span>
+<span id="cb64-5"><a href="advanced-inputs.html#cb64-5" tabindex="-1"></a>    <span class="ex">output:</span></span>
+<span id="cb64-6"><a href="advanced-inputs.html#cb64-6" tabindex="-1"></a>        <span class="st">&quot;results/{sample}.bam&quot;</span></span></code></pre></div>
 </div>
-<div id="problems-snakemake-solves" class="section level2 hasAnchor" number="1.3">
-<h2><span class="header-section-number">1.3</span> Problems Snakemake Solves<a href="index.html#problems-snakemake-solves" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><strong>Managing Complex Dependenciess:</strong> Snakemake automatically determines which steps depend on which others and runs them in the right order without manual intervention.</li>
-<li><strong>Avoiding Unnecessary Work:</strong> It detects when inputs or code have changed and re-runs only the affected steps, saving both time and computing resources.</li>
-<li><strong>Portability Across Systems:</strong> The same workflow can run unchanged on a laptop, a high-performance computing cluster, or even the cloud.</li>
-<li><strong>Parallel Execution Without Extra Effort:</strong> Snakemake can execute independent tasks simultaneously, using all available cores or cluster nodes.</li>
-<li><strong>Reproducibility and Transparency:</strong> By defining workflows in a readable text format, Snakemake makes analyses easy to share, inspect, and reproduce years later.</li>
-</ul>
-</div>
-<div id="relevant-links" class="section level2 hasAnchor" number="1.4">
-<h2><span class="header-section-number">1.4</span> Relevant links<a href="index.html#relevant-links" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li>Official Snakemake website: <a href="https://snakemake.github.io" class="uri">https://snakemake.github.io</a></li>
-<li>Snakemake documentation: <a href="https://snakemake.readthedocs.io" class="uri">https://snakemake.readthedocs.io</a></li>
-<li>Tutorial with examples: <a href="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html" class="uri">https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html</a></li>
-<li>Workflow examples: <a href="https://github.com/snakemake-workflows" class="uri">https://github.com/snakemake-workflows</a></li>
-</ul>
+<div id="exercise-3" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Exercise 3<a href="advanced-inputs.html#exercise-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="1">
-<li id="fn1"><p>University of Copenhagen, <a href="mailto:ostaizka.aizpurua@sund.ku.dk" class="email">ostaizka.aizpurua@sund.ku.dk</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="getting-ready.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="advanced-rule-parameters.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="checkpoints.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script>/*! jQuery v3.6.0 | (c) OpenJS Foundation and other contributors | jquery.org/license */

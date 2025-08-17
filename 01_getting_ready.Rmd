@@ -1,0 +1,150 @@
+# Getting ready
+
+## Visual studio code
+
+### Install extensions
+
+- Python 
+- Snakemake Language
+- Remote - SSH
+- Remote Explorer
+
+## Log-in to Mjolnir
+
+As this tutorial needs to be valid for all participants, we will start by defining our user id by changing `jpl786` to your personal KU-id in this example
+
+```{sh eval=FALSE}
+user="jpl786"
+```
+
+This workshop is prepared to be run in the Globe HPC Mjolnir. So, let's connect to the server.
+
+```{sh eval=FALSE}
+ssh ${user}@mjolnirgate.unicph.domain
+```
+
+We will need to define our user-id once again, this time in the remote server.
+
+```{sh eval=FALSE}
+user="jpl786"
+```
+
+## Explore directories
+
+First of all, we will explore the two most relevant directories for this workshop.
+
+### Common directory
+
+This directory contains all the relevant files needed for the workshop.
+
+```{sh eval=FALSE}
+ls -lah /projects/course_2/data
+```
+
+### Personal directory
+
+This is where all your operations will happen.
+
+```{sh eval=FALSE}
+ls -lah  /projects/course_2/people/${user}
+```
+
+### Copy files to you personal directory
+
+All the files in the common directory will be copied to your personal directory.
+
+```{sh eval=FALSE}
+cp -r /projects/course_2/data /projects/course_2/people/${user}
+```
+
+## Useful aliases
+
+Let's declare some useful aliases to make the work a bit more pleasant. 
+
+```{sh eval=FALSE}
+cd /projects/course_2/people/${user}
+
+# Generate the file containing the aliases
+cat <<EOF > aliases
+alias myjobs='squeue -u ${user} --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6m %k" --me'
+alias screens='screen -list'
+EOF
+
+# Source the aliases
+source aliases
+```
+
+## Screen session
+
+Screen is a simple tool that keeps your command-line session running on a server even if your internet drops or you close your laptop. Think of it like putting your terminal in a locker—you can step away and later unlock it to find everything exactly where you left it. It also lets you make several “tabs” (windows) inside one SSH login and switch between them. On HPC clusters where tasks can run for hours, starting them inside Screen keeps them safe and easy to rejoin. It’s lightweight and saves you from losing work.
+
+To create a screen session for the entire duration of the workshop:
+
+```{sh eval=FALSE}
+screen -S snakemake_workshop
+```
+
+To get out from the session, you must type `ctrl+a d`
+
+To re-enter the session, simply:
+
+```{sh eval=FALSE}
+screen -r snakemake_workshop
+```
+
+And to close the session, just type `exit`.
+
+## Interactive job
+
+On a shared cluster like Mjolnir, the entry (login) nodes are the front door: they’re meant for quick, lightweight tasks like connecting, moving files, loading modules, editing scripts, and submitting jobs. They are shared by everyone and deliberately constrained (CPU, memory, long-running limits). Running heavy computations there slows the system for all users and can trigger automatic kills from cluster policies. An interactive session gives you a reserved slice of the compute nodes through the scheduler (e.g., Slurm).
+
+When you are in the entry node, the following command should return.
+
+```{sh eval=FALSE}
+hostname
+```
+
+```
+mjolnirgate01fl.unicph.domain
+```
+
+In this workshop, each participant will get allocated 4 CPUs and 16GB of memory at node mjolnircomp14fl. When that time is over, the session will close automatically.
+
+```{sh eval=FALSE}
+srun --nodes=1 --job-name=snakemake_workshop --ntasks-per-node=4 --time=08:00:00 --mem=16G --pty bash -i
+```
+
+To verify you are in the computing node the `hostname` command should now display:
+
+```
+mjolnirgate14fl.unicph.domain
+```
+
+To exit the interactive job, just type `exit`.
+
+## Required modules
+
+We will need to load two key modules to run the workshop. If you have your own conda, consider deactivating it temporarily to ensure the exercises run smoothly.
+
+```{sh eval=FALSE}
+# Ensure there is nothing loaded
+module purge
+
+# Load the relevant modules
+module load snakemake/9.4.0
+module load miniconda/py39_23.1
+
+# List the loaded modules
+module list
+```
+
+Use should see exactly this:
+
+```
+Currently Loaded Modulefiles:
+ 1) miniconda/py39_23.1   2) snakemake/9.4.0
+```
+
+## Let's go!
+
+Now we are ready to go!

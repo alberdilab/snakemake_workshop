@@ -1,0 +1,231 @@
+# Expanding your workflow
+
+Once you understand the basics of Snakemake—rules, inputs, outputs, and dependencies—you can start designing larger, more flexible workflows. This involves following a clear directory structure, using configuration files, adding wildcards for multiple datasets, and organizing rules for maintainability.
+
+## Standard workflow structure
+
+A well-organized Snakemake project usually follows a layout that keeps the workflow file, scripts, configurations, and results separate:
+
+```{sh eval=FALSE}
+workflow/
+├── Snakefile               # Main workflow definition
+├── config.yaml             # Workflow configuration
+├── rules/                  # Additional rule files (optional)
+│   ├── preprocess.smk
+│   └── analysis.smk
+├── scripts/                # Helper scripts (Python, R, Bash, etc.)
+│   ├── clean_data.py
+│   └── analyze.R
+├── envs/                   # Conda environment definitions
+│   ├── preprocess_env.yaml
+│   └── analysis_env.yaml
+├── data/                   # Input data
+│   └── reads/
+│   └── reference/
+└── results/                # Output files
+```
+
+## Configuration files
+
+Instead of hardcoding parameters or file paths into the Snakefile or into the Snakemake launching script, you can store them in a config.yaml file. You can use all standard YAML types: strings, numbers, booleans, lists, and nested dictionaries. 
+
+```{sh eval=FALSE}
+workflow/
+├── config.yaml
+```
+
+Here are some examples of information you can stored in a config file:
+
+**config.yml**
+```{sh eval=FALSE}
+# Execution parameters
+jobs: 100
+latency-wait: 60
+use-conda: true
+rerun-incomplete: true
+keep-going: true
+retries: 3
+
+#Resources
+default-resources:
+    mem_mb: 16 * 1024 * 2 ** (attempt - 1)
+    runtime: 300 * 2 ** (attempt - 1)
+```
+
+You can also chunk the configuration file by declaring child files:
+
+**config.yml**
+```{sh eval=FALSE}
+features: config/features.yml
+params: config/params.yml
+```
+
+**features.yml**
+```{sh eval=FALSE}
+hosts:
+  human: resources/reference/human_22_sub.fa.gz
+  chicken: resources/reference/chicken_39_sub.fa.gz
+mag_catalogues:
+  mag1: resources/reference/mags_sub.fa.gz
+```
+
+**params.yml**
+```{sh eval=FALSE}
+preprocess:
+  fastp:
+    extra: " --length_required 75 --trim_poly_g --trim_poly_x"
+  bowtie2:
+    bowtie2_extra: ""
+    samtools_extra: "-m 1G"
+
+quantify:
+  coverm:
+    genome:
+      methods: ["count", "covered_bases"]
+      separator: "@"
+      extra: "--min-covered-fraction 0"
+```
+
+### Using config information
+
+You can then access the information stored in the config file(s).
+
+## Modularisation of the Snakefile
+
+As workflows grow, a single Snakefile can become long and difficult to navigate. To improve maintainability, readability, and collaboration, you can split the workflow into multiple rule files and include them in your main Snakefile. These are typically stored in the `workflow/rules` directory:
+
+```{sh eval=FALSE}
+workflow/
+├── rules/
+│   ├── preprocess.smk
+│   └── analysis.smk
+```
+
+Instead of defining every rule in the Snakefile, rules are fetched from related files:
+
+**Snakefile**
+```{sh eval=FALSE}
+configfile: "config.yaml"
+
+include: "rules/preprocess.smk"
+include: "rules/align.smk"
+
+rule all:
+    input:
+        "results/final_report.html"
+```
+
+**rules/preprocess.smk**
+```{sh eval=FALSE}
+rule preprocess:
+    input: "data/raw/{sample}.csv"
+    output: "data/clean/{sample}.csv"
+    shell:
+        "python scripts/clean_data.py {input} {output}"
+```
+
+**rules/align.smk**
+```{sh eval=FALSE}
+rule align:
+    input:
+        reads="data/clean/{sample}.csv",
+        ref=config["reference"]
+    output: "results/{sample}.bam"
+    shell:
+        "bwa mem {input.ref} {input.reads} | samtools view -b -o {output}"
+```
+
+## Using custom environments
+
+Robust workflows separate software environments from pipeline logic. Snakemake makes this easy with per-rule environments so each step has exactly the tools and versions it needs—improving reproducibility and avoiding “it works on my machine”. 
+
+### HPC environment modules
+
+Mjolnir, as many other HPCs, provide modules that can be loaded per rule:
+
+```{sh eval=FALSE}
+rule align:
+    input:
+        ref=config["references"]["genome_fa"],
+        reads="data/{sample}.fastq.gz"
+    output:
+        bam="results/{sample}.bam"
+    envmodules:
+        "fastqc/0.12.1",
+        "java/17"
+    shell:
+        "fastqc -o results {input}"
+```
+
+### Conda environments
+
+Conda environments are typically declared and stored in the `workflow/envs` directory.
+
+```{sh eval=FALSE}
+workflow/
+├── envs/                   # Conda environment definitions
+│   ├── preprocess.yaml
+│   └── analysis.yaml
+```
+
+Environments are declared as small YAML files:
+
+**workflow/envs/preprocess.yaml**
+```{sh eval=FALSE}
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bwa=0.7.17
+  - samtools=1.20
+  - python=3.11
+  - pip
+  - pip:
+      - pysam==0.22.0
+```
+
+And then requested in the respective rule in the snakefile:
+
+```{sh eval=FALSE}
+rule align:
+    input:
+        ref=config["references"]["genome_fa"],
+        reads="data/{sample}.fastq.gz"
+    output:
+        bam="results/{sample}.bam"
+    conda: "envs/preprocess.yaml"
+    shell:
+        "bwa mem -t {threads} {input.ref} {input.reads} | samtools view -b -o {output.bam}"
+```
+
+To use conda environments, it's necessary to use the `--use-conda` argument when launching snakemake:
+
+```{sh eval=FALSE}
+snakemake --use-conda
+```
+
+### Other compartimentalisation options
+
+It is also possible to use Singularity containers and Docker images following a similar logic.
+
+## Exercise 2
+
+In the directory `exercise2`, you will find a more complex snakemake worflow structure with a few errors. Note this time the workflow requires the use of conda environments, so make sure you launch snakemake using:
+
+```{sh eval=FALSE}
+snakemake --use-conda
+```
+
+Try to fix it to get the output file `results/counts.tsv` containing the following simple result:
+
+**results/counts.tsv**
+```
+16
+```
+
+<!--
+- configfile has not been declared. add configfile: "config.yaml" to the snakefile
+- the rules directory has not been added to the ruls.smk
+- the path to the conda environment is incorrect ("../envs/environment.yaml")
+-->

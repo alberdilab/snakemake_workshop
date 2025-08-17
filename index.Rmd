@@ -23,6 +23,35 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This is the template for the course contents.
+**Welcome to the Snakemake Workshop!**
 
+In this session, we’ll explore how Snakemake can help you build scalable, reproducible, and automated workflows for data analysis. You’ll learn how to define tasks as rules, manage dependencies, and take full advantage of parallel execution on a high-performance cluster. By the end, you’ll be able to design workflows that are not only efficient, but also easy to share and reproduce.
 
+## What is Snakemake?
+
+Snakemake is a workflow management system that helps you automate and organize complex data processing tasks. Instead of manually running each step of an analysis in the correct order, you describe what needs to be done, the inputs it requires, and the outputs it should produce. Snakemake then determines the correct execution order, runs tasks in parallel where possible, and ensures that only the necessary steps are re-run when data or code changes.
+
+This approach makes your work more efficient, reproducible, and less prone to errors, whether you are working on a single computer or a high-performance computing cluster. In simple terms, it is like providing your computer with a detailed recipe: each step knows exactly which ingredients it needs, what it produces, and when it needs to be executed.
+
+## Why Workflow Automation Matters
+
+- **Reproducibility:** In research and data-driven projects, results must be repeatable. Automation ensures that the same steps produce the same results every time, regardless of who runs them or where they are run.
+- **Efficiency:** Automated workflows save time by eliminating repetitive manual commands and by re-running only the parts of an analysis that have changed.
+- **Error Reduction:** Manual execution increases the risk of skipping steps, running them in the wrong order, or using outdated files. Automation enforces the correct sequence and data flow.
+- **Scalability:** As projects grow, the number of steps and datasets can become unmanageable. Automated workflows make it practical to handle dozens or hundreds of tasks reliably.
+- **Documentation by Design:** A well-defined workflow doubles as a detailed record of the entire analysis process, which is invaluable for collaboration, review, and publication.
+
+## Problems Snakemake Solves
+
+- **Managing Complex Dependenciess:** Snakemake automatically determines which steps depend on which others and runs them in the right order without manual intervention.
+- **Avoiding Unnecessary Work:** It detects when inputs or code have changed and re-runs only the affected steps, saving both time and computing resources.
+- **Portability Across Systems:** The same workflow can run unchanged on a laptop, a high-performance computing cluster, or even the cloud.
+- **Parallel Execution Without Extra Effort:** Snakemake can execute independent tasks simultaneously, using all available cores or cluster nodes.
+- **Reproducibility and Transparency:** By defining workflows in a readable text format, Snakemake makes analyses easy to share, inspect, and reproduce years later.
+
+## Relevant links
+
+- Official Snakemake website: https://snakemake.github.io
+- Snakemake documentation: https://snakemake.readthedocs.io
+- Tutorial with examples: https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html
+- Workflow examples: https://github.com/snakemake-workflows

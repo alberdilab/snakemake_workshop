@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Pipeline management with Snakemake</title>
+  <title>Chapter 4 Expanding your workflow | Pipeline management with Snakemake</title>
   <meta name="description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Pipeline management with Snakemake" />
+  <meta property="og:title" content="Chapter 4 Expanding your workflow | Pipeline management with Snakemake" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="github-repo" content="alberdilab/snakemake_workshop" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Pipeline management with Snakemake" />
+  <meta name="twitter:title" content="Chapter 4 Expanding your workflow | Pipeline management with Snakemake" />
   
   <meta name="twitter:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="getting-ready.html"/>
+<link rel="prev" href="snakemake-basics.html"/>
+<link rel="next" href="advanced-rule-parameters.html"/>
 
 
 
@@ -2120,65 +2120,187 @@ color: #a52929;
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Pipeline management with Snakemake</h1>
-<h2 class="subtitle"><em>Section for Hologenomics Workshop</em></h2>
-<p class="author"><em>Antton Alberdi<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></em></p>
-<p class="date"><em>Last update: 2025-08-17</em></p>
+<div id="expanding-your-workflow" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Expanding your workflow<a href="expanding-your-workflow.html#expanding-your-workflow" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Once you understand the basics of Snakemake—rules, inputs, outputs, and dependencies—you can start designing larger, more flexible workflows. This involves following a clear directory structure, using configuration files, adding wildcards for multiple datasets, and organizing rules for maintainability.</p>
+<div id="standard-workflow-structure" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Standard workflow structure<a href="expanding-your-workflow.html#standard-workflow-structure" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A well-organized Snakemake project usually follows a layout that keeps the workflow file, scripts, configurations, and results separate:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb34-1"><a href="expanding-your-workflow.html#cb34-1" tabindex="-1"></a><span class="ex">workflow/</span></span>
+<span id="cb34-2"><a href="expanding-your-workflow.html#cb34-2" tabindex="-1"></a><span class="ex">├──</span> Snakefile               <span class="co"># Main workflow definition</span></span>
+<span id="cb34-3"><a href="expanding-your-workflow.html#cb34-3" tabindex="-1"></a><span class="ex">├──</span> config.yaml             <span class="co"># Workflow configuration</span></span>
+<span id="cb34-4"><a href="expanding-your-workflow.html#cb34-4" tabindex="-1"></a><span class="ex">├──</span> rules/                  <span class="co"># Additional rule files (optional)</span></span>
+<span id="cb34-5"><a href="expanding-your-workflow.html#cb34-5" tabindex="-1"></a><span class="ex">│</span>   ├── preprocess.smk</span>
+<span id="cb34-6"><a href="expanding-your-workflow.html#cb34-6" tabindex="-1"></a><span class="ex">│</span>   └── analysis.smk</span>
+<span id="cb34-7"><a href="expanding-your-workflow.html#cb34-7" tabindex="-1"></a><span class="ex">├──</span> scripts/                <span class="co"># Helper scripts (Python, R, Bash, etc.)</span></span>
+<span id="cb34-8"><a href="expanding-your-workflow.html#cb34-8" tabindex="-1"></a><span class="ex">│</span>   ├── clean_data.py</span>
+<span id="cb34-9"><a href="expanding-your-workflow.html#cb34-9" tabindex="-1"></a><span class="ex">│</span>   └── analyze.R</span>
+<span id="cb34-10"><a href="expanding-your-workflow.html#cb34-10" tabindex="-1"></a><span class="ex">├──</span> envs/                   <span class="co"># Conda environment definitions</span></span>
+<span id="cb34-11"><a href="expanding-your-workflow.html#cb34-11" tabindex="-1"></a><span class="ex">│</span>   ├── preprocess_env.yaml</span>
+<span id="cb34-12"><a href="expanding-your-workflow.html#cb34-12" tabindex="-1"></a><span class="ex">│</span>   └── analysis_env.yaml</span>
+<span id="cb34-13"><a href="expanding-your-workflow.html#cb34-13" tabindex="-1"></a><span class="ex">├──</span> data/                   <span class="co"># Input data</span></span>
+<span id="cb34-14"><a href="expanding-your-workflow.html#cb34-14" tabindex="-1"></a><span class="ex">│</span>   └── reads/</span>
+<span id="cb34-15"><a href="expanding-your-workflow.html#cb34-15" tabindex="-1"></a><span class="ex">│</span>   └── reference/</span>
+<span id="cb34-16"><a href="expanding-your-workflow.html#cb34-16" tabindex="-1"></a><span class="ex">└──</span> results/                <span class="co"># Output files</span></span></code></pre></div>
 </div>
-<div id="introduction" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><strong>Welcome to the Snakemake Workshop!</strong></p>
-<p>In this session, we’ll explore how Snakemake can help you build scalable, reproducible, and automated workflows for data analysis. You’ll learn how to define tasks as rules, manage dependencies, and take full advantage of parallel execution on a high-performance cluster. By the end, you’ll be able to design workflows that are not only efficient, but also easy to share and reproduce.</p>
-<div id="what-is-snakemake" class="section level2 hasAnchor" number="1.1">
-<h2><span class="header-section-number">1.1</span> What is Snakemake?<a href="index.html#what-is-snakemake" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Snakemake is a workflow management system that helps you automate and organize complex data processing tasks. Instead of manually running each step of an analysis in the correct order, you describe what needs to be done, the inputs it requires, and the outputs it should produce. Snakemake then determines the correct execution order, runs tasks in parallel where possible, and ensures that only the necessary steps are re-run when data or code changes.</p>
-<p>This approach makes your work more efficient, reproducible, and less prone to errors, whether you are working on a single computer or a high-performance computing cluster. In simple terms, it is like providing your computer with a detailed recipe: each step knows exactly which ingredients it needs, what it produces, and when it needs to be executed.</p>
+<div id="configuration-files" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Configuration files<a href="expanding-your-workflow.html#configuration-files" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Instead of hardcoding parameters or file paths into the Snakefile or into the Snakemake launching script, you can store them in a config.yaml file. You can use all standard YAML types: strings, numbers, booleans, lists, and nested dictionaries.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb35-1"><a href="expanding-your-workflow.html#cb35-1" tabindex="-1"></a><span class="ex">workflow/</span></span>
+<span id="cb35-2"><a href="expanding-your-workflow.html#cb35-2" tabindex="-1"></a><span class="ex">├──</span> config.yaml</span></code></pre></div>
+<p>Here are some examples of information you can stored in a config file:</p>
+<p><strong>config.yml</strong></p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb36-1"><a href="expanding-your-workflow.html#cb36-1" tabindex="-1"></a><span class="co"># Execution parameters</span></span>
+<span id="cb36-2"><a href="expanding-your-workflow.html#cb36-2" tabindex="-1"></a><span class="ex">jobs:</span> 100</span>
+<span id="cb36-3"><a href="expanding-your-workflow.html#cb36-3" tabindex="-1"></a><span class="ex">latency-wait:</span> 60</span>
+<span id="cb36-4"><a href="expanding-your-workflow.html#cb36-4" tabindex="-1"></a><span class="ex">use-conda:</span> true</span>
+<span id="cb36-5"><a href="expanding-your-workflow.html#cb36-5" tabindex="-1"></a><span class="ex">rerun-incomplete:</span> true</span>
+<span id="cb36-6"><a href="expanding-your-workflow.html#cb36-6" tabindex="-1"></a><span class="ex">keep-going:</span> true</span>
+<span id="cb36-7"><a href="expanding-your-workflow.html#cb36-7" tabindex="-1"></a><span class="ex">retries:</span> 3</span>
+<span id="cb36-8"><a href="expanding-your-workflow.html#cb36-8" tabindex="-1"></a></span>
+<span id="cb36-9"><a href="expanding-your-workflow.html#cb36-9" tabindex="-1"></a><span class="co">#Resources</span></span>
+<span id="cb36-10"><a href="expanding-your-workflow.html#cb36-10" tabindex="-1"></a><span class="ex">default-resources:</span></span>
+<span id="cb36-11"><a href="expanding-your-workflow.html#cb36-11" tabindex="-1"></a>    <span class="ex">mem_mb:</span> 16 <span class="pp">*</span> 1024 <span class="pp">*</span> 2 <span class="pp">**</span> <span class="er">(</span><span class="ex">attempt</span> <span class="at">-</span> 1<span class="kw">)</span></span>
+<span id="cb36-12"><a href="expanding-your-workflow.html#cb36-12" tabindex="-1"></a>    <span class="ex">runtime:</span> 300 <span class="pp">*</span> 2 <span class="pp">**</span> <span class="er">(</span><span class="ex">attempt</span> <span class="at">-</span> 1<span class="kw">)</span></span></code></pre></div>
+<p>You can also chunk the configuration file by declaring child files:</p>
+<p><strong>config.yml</strong></p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb37-1"><a href="expanding-your-workflow.html#cb37-1" tabindex="-1"></a><span class="ex">features:</span> config/features.yml</span>
+<span id="cb37-2"><a href="expanding-your-workflow.html#cb37-2" tabindex="-1"></a><span class="ex">params:</span> config/params.yml</span></code></pre></div>
+<p><strong>features.yml</strong></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb38-1"><a href="expanding-your-workflow.html#cb38-1" tabindex="-1"></a><span class="ex">hosts:</span></span>
+<span id="cb38-2"><a href="expanding-your-workflow.html#cb38-2" tabindex="-1"></a>  <span class="ex">human:</span> resources/reference/human_22_sub.fa.gz</span>
+<span id="cb38-3"><a href="expanding-your-workflow.html#cb38-3" tabindex="-1"></a>  <span class="ex">chicken:</span> resources/reference/chicken_39_sub.fa.gz</span>
+<span id="cb38-4"><a href="expanding-your-workflow.html#cb38-4" tabindex="-1"></a><span class="ex">mag_catalogues:</span></span>
+<span id="cb38-5"><a href="expanding-your-workflow.html#cb38-5" tabindex="-1"></a>  <span class="ex">mag1:</span> resources/reference/mags_sub.fa.gz</span></code></pre></div>
+<p><strong>params.yml</strong></p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb39-1"><a href="expanding-your-workflow.html#cb39-1" tabindex="-1"></a><span class="ex">preprocess:</span></span>
+<span id="cb39-2"><a href="expanding-your-workflow.html#cb39-2" tabindex="-1"></a>  <span class="ex">fastp:</span></span>
+<span id="cb39-3"><a href="expanding-your-workflow.html#cb39-3" tabindex="-1"></a>    <span class="ex">extra:</span> <span class="st">&quot; --length_required 75 --trim_poly_g --trim_poly_x&quot;</span></span>
+<span id="cb39-4"><a href="expanding-your-workflow.html#cb39-4" tabindex="-1"></a>  <span class="ex">bowtie2:</span></span>
+<span id="cb39-5"><a href="expanding-your-workflow.html#cb39-5" tabindex="-1"></a>    <span class="ex">bowtie2_extra:</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb39-6"><a href="expanding-your-workflow.html#cb39-6" tabindex="-1"></a>    <span class="ex">samtools_extra:</span> <span class="st">&quot;-m 1G&quot;</span></span>
+<span id="cb39-7"><a href="expanding-your-workflow.html#cb39-7" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="expanding-your-workflow.html#cb39-8" tabindex="-1"></a><span class="ex">quantify:</span></span>
+<span id="cb39-9"><a href="expanding-your-workflow.html#cb39-9" tabindex="-1"></a>  <span class="ex">coverm:</span></span>
+<span id="cb39-10"><a href="expanding-your-workflow.html#cb39-10" tabindex="-1"></a>    <span class="ex">genome:</span></span>
+<span id="cb39-11"><a href="expanding-your-workflow.html#cb39-11" tabindex="-1"></a>      <span class="ex">methods:</span> [<span class="st">&quot;count&quot;</span>, <span class="st">&quot;covered_bases&quot;</span>]</span>
+<span id="cb39-12"><a href="expanding-your-workflow.html#cb39-12" tabindex="-1"></a>      <span class="ex">separator:</span> <span class="st">&quot;@&quot;</span></span>
+<span id="cb39-13"><a href="expanding-your-workflow.html#cb39-13" tabindex="-1"></a>      <span class="ex">extra:</span> <span class="st">&quot;--min-covered-fraction 0&quot;</span></span></code></pre></div>
+<div id="using-config-information" class="section level3 hasAnchor" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Using config information<a href="expanding-your-workflow.html#using-config-information" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>You can then access the information stored in the config file(s).</p>
 </div>
-<div id="why-workflow-automation-matters" class="section level2 hasAnchor" number="1.2">
-<h2><span class="header-section-number">1.2</span> Why Workflow Automation Matters<a href="index.html#why-workflow-automation-matters" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><strong>Reproducibility:</strong> In research and data-driven projects, results must be repeatable. Automation ensures that the same steps produce the same results every time, regardless of who runs them or where they are run.</li>
-<li><strong>Efficiency:</strong> Automated workflows save time by eliminating repetitive manual commands and by re-running only the parts of an analysis that have changed.</li>
-<li><strong>Error Reduction:</strong> Manual execution increases the risk of skipping steps, running them in the wrong order, or using outdated files. Automation enforces the correct sequence and data flow.</li>
-<li><strong>Scalability:</strong> As projects grow, the number of steps and datasets can become unmanageable. Automated workflows make it practical to handle dozens or hundreds of tasks reliably.</li>
-<li><strong>Documentation by Design:</strong> A well-defined workflow doubles as a detailed record of the entire analysis process, which is invaluable for collaboration, review, and publication.</li>
-</ul>
 </div>
-<div id="problems-snakemake-solves" class="section level2 hasAnchor" number="1.3">
-<h2><span class="header-section-number">1.3</span> Problems Snakemake Solves<a href="index.html#problems-snakemake-solves" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><strong>Managing Complex Dependenciess:</strong> Snakemake automatically determines which steps depend on which others and runs them in the right order without manual intervention.</li>
-<li><strong>Avoiding Unnecessary Work:</strong> It detects when inputs or code have changed and re-runs only the affected steps, saving both time and computing resources.</li>
-<li><strong>Portability Across Systems:</strong> The same workflow can run unchanged on a laptop, a high-performance computing cluster, or even the cloud.</li>
-<li><strong>Parallel Execution Without Extra Effort:</strong> Snakemake can execute independent tasks simultaneously, using all available cores or cluster nodes.</li>
-<li><strong>Reproducibility and Transparency:</strong> By defining workflows in a readable text format, Snakemake makes analyses easy to share, inspect, and reproduce years later.</li>
-</ul>
+<div id="modularisation-of-the-snakefile" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Modularisation of the Snakefile<a href="expanding-your-workflow.html#modularisation-of-the-snakefile" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As workflows grow, a single Snakefile can become long and difficult to navigate. To improve maintainability, readability, and collaboration, you can split the workflow into multiple rule files and include them in your main Snakefile. These are typically stored in the <code>workflow/rules</code> directory:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb40-1"><a href="expanding-your-workflow.html#cb40-1" tabindex="-1"></a><span class="ex">workflow/</span></span>
+<span id="cb40-2"><a href="expanding-your-workflow.html#cb40-2" tabindex="-1"></a><span class="ex">├──</span> rules/</span>
+<span id="cb40-3"><a href="expanding-your-workflow.html#cb40-3" tabindex="-1"></a><span class="ex">│</span>   ├── preprocess.smk</span>
+<span id="cb40-4"><a href="expanding-your-workflow.html#cb40-4" tabindex="-1"></a><span class="ex">│</span>   └── analysis.smk</span></code></pre></div>
+<p>Instead of defining every rule in the Snakefile, rules are fetched from related files:</p>
+<p><strong>Snakefile</strong></p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb41-1"><a href="expanding-your-workflow.html#cb41-1" tabindex="-1"></a><span class="ex">configfile:</span> <span class="st">&quot;config.yaml&quot;</span></span>
+<span id="cb41-2"><a href="expanding-your-workflow.html#cb41-2" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="expanding-your-workflow.html#cb41-3" tabindex="-1"></a><span class="ex">include:</span> <span class="st">&quot;rules/preprocess.smk&quot;</span></span>
+<span id="cb41-4"><a href="expanding-your-workflow.html#cb41-4" tabindex="-1"></a><span class="ex">include:</span> <span class="st">&quot;rules/align.smk&quot;</span></span>
+<span id="cb41-5"><a href="expanding-your-workflow.html#cb41-5" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="expanding-your-workflow.html#cb41-6" tabindex="-1"></a><span class="ex">rule</span> all:</span>
+<span id="cb41-7"><a href="expanding-your-workflow.html#cb41-7" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb41-8"><a href="expanding-your-workflow.html#cb41-8" tabindex="-1"></a>        <span class="st">&quot;results/final_report.html&quot;</span></span></code></pre></div>
+<p><strong>rules/preprocess.smk</strong></p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb42-1"><a href="expanding-your-workflow.html#cb42-1" tabindex="-1"></a><span class="ex">rule</span> preprocess:</span>
+<span id="cb42-2"><a href="expanding-your-workflow.html#cb42-2" tabindex="-1"></a>    <span class="ex">input:</span> <span class="st">&quot;data/raw/{sample}.csv&quot;</span></span>
+<span id="cb42-3"><a href="expanding-your-workflow.html#cb42-3" tabindex="-1"></a>    <span class="ex">output:</span> <span class="st">&quot;data/clean/{sample}.csv&quot;</span></span>
+<span id="cb42-4"><a href="expanding-your-workflow.html#cb42-4" tabindex="-1"></a>    <span class="ex">shell:</span></span>
+<span id="cb42-5"><a href="expanding-your-workflow.html#cb42-5" tabindex="-1"></a>        <span class="st">&quot;python scripts/clean_data.py {input} {output}&quot;</span></span></code></pre></div>
+<p><strong>rules/align.smk</strong></p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb43-1"><a href="expanding-your-workflow.html#cb43-1" tabindex="-1"></a><span class="ex">rule</span> align:</span>
+<span id="cb43-2"><a href="expanding-your-workflow.html#cb43-2" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb43-3"><a href="expanding-your-workflow.html#cb43-3" tabindex="-1"></a>        <span class="va">reads</span><span class="op">=</span><span class="st">&quot;data/clean/{sample}.csv&quot;</span>,</span>
+<span id="cb43-4"><a href="expanding-your-workflow.html#cb43-4" tabindex="-1"></a>        <span class="va">ref</span><span class="op">=</span>config<span class="pp">[</span><span class="st">&quot;reference&quot;</span><span class="pp">]</span></span>
+<span id="cb43-5"><a href="expanding-your-workflow.html#cb43-5" tabindex="-1"></a>    <span class="ex">output:</span> <span class="st">&quot;results/{sample}.bam&quot;</span></span>
+<span id="cb43-6"><a href="expanding-your-workflow.html#cb43-6" tabindex="-1"></a>    <span class="ex">shell:</span></span>
+<span id="cb43-7"><a href="expanding-your-workflow.html#cb43-7" tabindex="-1"></a>        <span class="st">&quot;bwa mem {input.ref} {input.reads} | samtools view -b -o {output}&quot;</span></span></code></pre></div>
 </div>
-<div id="relevant-links" class="section level2 hasAnchor" number="1.4">
-<h2><span class="header-section-number">1.4</span> Relevant links<a href="index.html#relevant-links" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li>Official Snakemake website: <a href="https://snakemake.github.io" class="uri">https://snakemake.github.io</a></li>
-<li>Snakemake documentation: <a href="https://snakemake.readthedocs.io" class="uri">https://snakemake.readthedocs.io</a></li>
-<li>Tutorial with examples: <a href="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html" class="uri">https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html</a></li>
-<li>Workflow examples: <a href="https://github.com/snakemake-workflows" class="uri">https://github.com/snakemake-workflows</a></li>
-</ul>
+<div id="using-custom-environments" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> Using custom environments<a href="expanding-your-workflow.html#using-custom-environments" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Robust workflows separate software environments from pipeline logic. Snakemake makes this easy with per-rule environments so each step has exactly the tools and versions it needs—improving reproducibility and avoiding “it works on my machine”.</p>
+<div id="hpc-environment-modules" class="section level3 hasAnchor" number="4.4.1">
+<h3><span class="header-section-number">4.4.1</span> HPC environment modules<a href="expanding-your-workflow.html#hpc-environment-modules" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Mjolnir, as many other HPCs, provide modules that can be loaded per rule:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb44-1"><a href="expanding-your-workflow.html#cb44-1" tabindex="-1"></a><span class="ex">rule</span> align:</span>
+<span id="cb44-2"><a href="expanding-your-workflow.html#cb44-2" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb44-3"><a href="expanding-your-workflow.html#cb44-3" tabindex="-1"></a>        <span class="va">ref</span><span class="op">=</span>config<span class="pp">[</span><span class="st">&quot;references&quot;</span><span class="pp">][</span><span class="st">&quot;genome_fa&quot;</span><span class="pp">]</span>,</span>
+<span id="cb44-4"><a href="expanding-your-workflow.html#cb44-4" tabindex="-1"></a>        <span class="va">reads</span><span class="op">=</span><span class="st">&quot;data/{sample}.fastq.gz&quot;</span></span>
+<span id="cb44-5"><a href="expanding-your-workflow.html#cb44-5" tabindex="-1"></a>    <span class="ex">output:</span></span>
+<span id="cb44-6"><a href="expanding-your-workflow.html#cb44-6" tabindex="-1"></a>        <span class="va">bam</span><span class="op">=</span><span class="st">&quot;results/{sample}.bam&quot;</span></span>
+<span id="cb44-7"><a href="expanding-your-workflow.html#cb44-7" tabindex="-1"></a>    <span class="ex">envmodules:</span></span>
+<span id="cb44-8"><a href="expanding-your-workflow.html#cb44-8" tabindex="-1"></a>        <span class="st">&quot;fastqc/0.12.1&quot;</span><span class="ex">,</span></span>
+<span id="cb44-9"><a href="expanding-your-workflow.html#cb44-9" tabindex="-1"></a>        <span class="st">&quot;java/17&quot;</span></span>
+<span id="cb44-10"><a href="expanding-your-workflow.html#cb44-10" tabindex="-1"></a>    <span class="ex">shell:</span></span>
+<span id="cb44-11"><a href="expanding-your-workflow.html#cb44-11" tabindex="-1"></a>        <span class="st">&quot;fastqc -o results {input}&quot;</span></span></code></pre></div>
+</div>
+<div id="conda-environments" class="section level3 hasAnchor" number="4.4.2">
+<h3><span class="header-section-number">4.4.2</span> Conda environments<a href="expanding-your-workflow.html#conda-environments" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Conda environments are typically declared and stored in the <code>workflow/envs</code> directory.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb45-1"><a href="expanding-your-workflow.html#cb45-1" tabindex="-1"></a><span class="ex">workflow/</span></span>
+<span id="cb45-2"><a href="expanding-your-workflow.html#cb45-2" tabindex="-1"></a><span class="ex">├──</span> envs/                   <span class="co"># Conda environment definitions</span></span>
+<span id="cb45-3"><a href="expanding-your-workflow.html#cb45-3" tabindex="-1"></a><span class="ex">│</span>   ├── preprocess.yaml</span>
+<span id="cb45-4"><a href="expanding-your-workflow.html#cb45-4" tabindex="-1"></a><span class="ex">│</span>   └── analysis.yaml</span></code></pre></div>
+<p>Environments are declared as small YAML files:</p>
+<p><strong>workflow/envs/preprocess.yaml</strong></p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb46-1"><a href="expanding-your-workflow.html#cb46-1" tabindex="-1"></a><span class="ex">channels:</span></span>
+<span id="cb46-2"><a href="expanding-your-workflow.html#cb46-2" tabindex="-1"></a>  <span class="ex">-</span> conda-forge</span>
+<span id="cb46-3"><a href="expanding-your-workflow.html#cb46-3" tabindex="-1"></a>  <span class="ex">-</span> bioconda</span>
+<span id="cb46-4"><a href="expanding-your-workflow.html#cb46-4" tabindex="-1"></a>  <span class="ex">-</span> defaults</span>
+<span id="cb46-5"><a href="expanding-your-workflow.html#cb46-5" tabindex="-1"></a><span class="ex">dependencies:</span></span>
+<span id="cb46-6"><a href="expanding-your-workflow.html#cb46-6" tabindex="-1"></a>  <span class="ex">-</span> bwa=0.7.17</span>
+<span id="cb46-7"><a href="expanding-your-workflow.html#cb46-7" tabindex="-1"></a>  <span class="ex">-</span> samtools=1.20</span>
+<span id="cb46-8"><a href="expanding-your-workflow.html#cb46-8" tabindex="-1"></a>  <span class="ex">-</span> python=3.11</span>
+<span id="cb46-9"><a href="expanding-your-workflow.html#cb46-9" tabindex="-1"></a>  <span class="ex">-</span> pip</span>
+<span id="cb46-10"><a href="expanding-your-workflow.html#cb46-10" tabindex="-1"></a>  <span class="ex">-</span> pip:</span>
+<span id="cb46-11"><a href="expanding-your-workflow.html#cb46-11" tabindex="-1"></a>      <span class="ex">-</span> pysam==0.22.0</span></code></pre></div>
+<p>And then requested in the respective rule in the snakefile:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb47-1"><a href="expanding-your-workflow.html#cb47-1" tabindex="-1"></a><span class="ex">rule</span> align:</span>
+<span id="cb47-2"><a href="expanding-your-workflow.html#cb47-2" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb47-3"><a href="expanding-your-workflow.html#cb47-3" tabindex="-1"></a>        <span class="va">ref</span><span class="op">=</span>config<span class="pp">[</span><span class="st">&quot;references&quot;</span><span class="pp">][</span><span class="st">&quot;genome_fa&quot;</span><span class="pp">]</span>,</span>
+<span id="cb47-4"><a href="expanding-your-workflow.html#cb47-4" tabindex="-1"></a>        <span class="va">reads</span><span class="op">=</span><span class="st">&quot;data/{sample}.fastq.gz&quot;</span></span>
+<span id="cb47-5"><a href="expanding-your-workflow.html#cb47-5" tabindex="-1"></a>    <span class="ex">output:</span></span>
+<span id="cb47-6"><a href="expanding-your-workflow.html#cb47-6" tabindex="-1"></a>        <span class="va">bam</span><span class="op">=</span><span class="st">&quot;results/{sample}.bam&quot;</span></span>
+<span id="cb47-7"><a href="expanding-your-workflow.html#cb47-7" tabindex="-1"></a>    <span class="ex">conda:</span> <span class="st">&quot;envs/preprocess.yaml&quot;</span></span>
+<span id="cb47-8"><a href="expanding-your-workflow.html#cb47-8" tabindex="-1"></a>    <span class="ex">shell:</span></span>
+<span id="cb47-9"><a href="expanding-your-workflow.html#cb47-9" tabindex="-1"></a>        <span class="st">&quot;bwa mem -t {threads} {input.ref} {input.reads} | samtools view -b -o {output.bam}&quot;</span></span></code></pre></div>
+<p>To use conda environments, it’s necessary to use the <code>--use-conda</code> argument when launching snakemake:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb48-1"><a href="expanding-your-workflow.html#cb48-1" tabindex="-1"></a><span class="ex">snakemake</span> <span class="at">--use-conda</span></span></code></pre></div>
+</div>
+<div id="other-compartimentalisation-options" class="section level3 hasAnchor" number="4.4.3">
+<h3><span class="header-section-number">4.4.3</span> Other compartimentalisation options<a href="expanding-your-workflow.html#other-compartimentalisation-options" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>It is also possible to use Singularity containers and Docker images following a similar logic.</p>
+</div>
+</div>
+<div id="exercise-2" class="section level2 hasAnchor" number="4.5">
+<h2><span class="header-section-number">4.5</span> Exercise 2<a href="expanding-your-workflow.html#exercise-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In the directory <code>exercise2</code>, you will find a more complex snakemake worflow structure with a few errors. Note this time the workflow requires the use of conda environments, so make sure you launch snakemake using:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb49-1"><a href="expanding-your-workflow.html#cb49-1" tabindex="-1"></a><span class="ex">snakemake</span> <span class="at">--use-conda</span></span></code></pre></div>
+<p>Try to fix it to get the output file <code>results/counts.tsv</code> containing the following simple result:</p>
+<p><strong>results/counts.tsv</strong></p>
+<pre><code>16</code></pre>
+<!--
+- configfile has not been declared. add configfile: "config.yaml" to the snakefile
+- the rules directory has not been added to the ruls.smk
+- the path to the conda environment is incorrect ("../envs/environment.yaml")
+-->
 
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="1">
-<li id="fn1"><p>University of Copenhagen, <a href="mailto:ostaizka.aizpurua@sund.ku.dk" class="email">ostaizka.aizpurua@sund.ku.dk</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="getting-ready.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="snakemake-basics.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="advanced-rule-parameters.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script>/*! jQuery v3.6.0 | (c) OpenJS Foundation and other contributors | jquery.org/license */

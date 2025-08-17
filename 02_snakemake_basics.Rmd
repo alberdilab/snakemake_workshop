@@ -1,0 +1,267 @@
+# Snakemake basics
+
+Snakemake is a **rule-based** workflow system. Each rule says:
+
+- What it produces (the output)
+- What it needs to produce that (the input)
+- How to produce it (the command + parameters)
+
+Snakemake then figures out the right order to run everything and which parts can run at the same time.
+
+## The Snakefile
+
+The Snakefile is the heart of any Snakemake workflow. It is a plain text file—usually named `Snakefile` (with no file extension)—written in a **mix of Snakemake’s workflow syntax and regular Python code**.
+
+It serves as:
+
+- A blueprint for your entire analysis pipeline
+- A dependency map, describing what each step needs and produces
+- An execution plan that Snakemake follows to run your tasks in the correct order
+
+The Snakefile is human-readable, version-controllable (e.g., with Git), and shareable.
+
+## The rules
+
+The Snakefile contains (at least) the rules that define the pipeline.
+
+### The ALL rule
+
+You typically start by specifying what you ultimately want to produce (plots, tables, reports) in the `all` rule:
+
+```{sh eval=FALSE}
+rule all:
+  input: 
+    "results/plot.png"
+```
+
+In this example, the pipeline will yield a `plot.png` file in the `results` directory. But you can also define multiple final outputs:
+
+```{sh eval=FALSE}
+rule all:
+  input: 
+    "results/plot.png",
+    "results/stats.tsv"
+```
+
+### A regular rule
+
+The regular rules define the path to reach the final outputs. Each rule at least must have a:
+
+- **Name:** e.g., rule clean_data.
+- **Input:** files or results needed.
+- **Output:** files the step produces.
+- **Command:** the command or script that performs the transformation.
+
+This rule, for example, outputs the row counts of a file to another file:
+
+```{sh eval=FALSE}
+rule count_lines:
+  input:
+    "data/sample1.txt"
+  output:
+    "results/sample1.txt"
+  shell:
+    "wc -l {input} | awk '{{print $1}}' > {output}"
+```
+
+#### Name
+
+It must be unique, and ideally informative, as it will be used to identify the rules in the overview files, logs, etc. If you use repeated names, snakemake will complain and stop working.
+
+#### Input and output
+
+Snakemake lets you describe input and output files in several convenient ways.
+
+##### Single file
+
+```{sh eval=FALSE}
+rule count_lines:
+  input: "data/sample1.txt"
+```
+
+or
+
+```{sh eval=FALSE}
+rule count_lines:
+  input: 
+    "data/sample1.txt"
+  output: "refs/genome.fa.fai"
+  shell:  "samtools faidx {input}"
+```
+
+##### Multiple unordered files
+
+```{sh eval=FALSE}
+rule count_lines:
+  input:  ["results/a.counts.txt", "results/b.counts.txt"]
+  output: "results/merged.tsv"
+  shell:  "cat {input} > {output}"
+```
+
+In this case, `{input}` expands to a space-separated list, this example resulting in:
+
+```{sh eval=FALSE}
+"cat results/a.counts.txt results/b.counts.txt > results/merged.tsv"
+```
+
+##### Named children (recommended for clarity)
+
+```{sh eval=FALSE}
+rule count_lines:
+  input:
+    read1="reads/{sample}_R1.fastq.gz",
+    read2="reads/{sample}_R2.fastq.gz",
+    ref="refs/genome.fa"
+  output:
+    bam="results/{sample}.bam"
+  shell:
+    "bwa mem {input.ref} {input.read1} {input.read2} | "
+    "samtools view -b -o {output.bam} 2> {log.err}"
+```
+
+Use dot notation like `{input.read1}`, `{output.bam}`, etc.
+
+#### Command
+
+Snakemake gives you several ways to express the command of a rule. 
+
+##### Shell
+
+The most common one is a regular shell command:
+
+```{sh eval=FALSE}
+rule count_lines:
+  input:
+    "data/sample1.txt"
+  output:
+    "results/sample1.txt"
+  shell:
+    "wc -l {input} | awk '{{print $1}}' > {output}"
+```
+
+The command definition can also be more complex, and expressed in multiple lines:
+
+```{sh eval=FALSE}
+rule count_lines:
+  input:
+    "data/sample1.txt"
+  output:
+    "results/sample1.txt"
+  shell:
+    """
+    {add more complex command}
+    """
+```
+
+##### Script
+
+Or can run python scripts instead:
+
+```{sh eval=FALSE}
+rule count_lines:
+  input:
+    "data/sample1.txt"
+  output:
+    "results/sample1.txt"
+  script: "scripts/normalize.py"
+```
+
+##### Run
+
+Or an inline Python block
+
+
+```{sh eval=FALSE}
+rule concat:
+    input:  ["pieces/a.txt", "pieces/b.txt"]
+    output: "all.txt"
+    run:
+        with open(output[0], "w") as out:
+            for p in input:
+                out.write(open(p).read())
+```
+
+
+#### Child arguments
+
+## Linking rules together
+
+One of Snakemake’s most powerful features is that you don’t need to manually tell it the order in which to run rules. Instead, Snakemake infers the correct sequence automatically by looking at:
+
+- The output files of one rule
+- The input files of another
+
+When the output of one rule matches the input of another, Snakemake creates a connection between them—this connection is a dependency. Let's see an example:
+
+```{sh eval=FALSE}
+rule all:
+    input: "results/summary.txt"
+
+rule preprocess:
+    input: "raw/data.csv"
+    output: "processed/data_clean.csv"
+    shell: "python scripts/clean_data.py {input} {output}"
+
+rule summarize:
+    input: "processed/data_clean.csv"
+    output: "results/summary.txt"
+    shell: "python scripts/summarize.py {input} {output}"
+```
+
+## Executing the pipeline
+
+The execution of the pipeline is very straightforward. From the command line, in the directory containing your Snakefile, just run:
+
+```{sh eval=FALSE}
+snakemake
+```
+
+By default, Snakemake looks for a file named Snakefile in the current directory, or in the `workflow` directory, both with and without a capital S.
+
+- `snakefile`
+- `Snakefile`
+- `workflow/snakefile`
+- `workflow/Snakefile`
+
+It is also possible to define a different name for the snakefile, usually with the extension `.smk`. If so, you need to tell snakemake where the snakefile is:
+
+```{sh eval=FALSE}
+snakemake -s mydirectory/mysnakefile.smk
+```
+
+## Previsualising the pipeline
+
+Before running a workflow, it is often helpful to preview what Snakemake will do. This allows you to verify that all dependencies are correctly linked, that no unexpected steps are included, and that your final targets are well defined. These tools are especially useful when developing or modifying workflows, ensuring that your Snakefile behaves as intended before committing computational resources. 
+
+#### Dry run
+
+Shows the planned execution without actually running any commands. This lists all jobs that would be executed and their order.
+
+```{sh eval=FALSE}
+snakemake --dry-run
+```
+
+#### DAG (Directed Acyclic Graph) visualization
+
+Generates a visual map of the workflow, illustrating how rules are connected. The resulting diagram helps you check for missing dependencies, unexpected branches, or redundant steps.
+
+```{sh eval=FALSE}
+snakemake --dag | dot -Tpng > dag.png
+```
+
+## Exercise 1
+
+In the directory `exercise1`, you will find a data file and a snakefile with a few errors. Try to fix it to get the output file `counts.tsv` containing the following simple result:
+
+**counts.tsv**
+```
+7
+```
+
+<!--
+- input file of count_lines is incorrect (it should be "data.tsv.gz")
+- shell of count_lines is missing the output file, so the result is printed to screen. Add "> {output}".
+-->
+
+
+

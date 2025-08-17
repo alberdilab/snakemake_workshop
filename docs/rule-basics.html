@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Pipeline management with Snakemake</title>
+  <title>Chapter 4 Rule basics | Pipeline management with Snakemake</title>
   <meta name="description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Pipeline management with Snakemake" />
+  <meta property="og:title" content="Chapter 4 Rule basics | Pipeline management with Snakemake" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="github-repo" content="alberdilab/snakemake_workshop" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Pipeline management with Snakemake" />
+  <meta name="twitter:title" content="Chapter 4 Rule basics | Pipeline management with Snakemake" />
   
   <meta name="twitter:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
+<link rel="prev" href="snakemake-basics.html"/>
 
-<link rel="next" href="getting-ready.html"/>
 
 
 
@@ -2035,22 +2035,11 @@ color: #a52929;
 </ul></li>
 <li class="chapter" data-level="2" data-path="getting-ready.html"><a href="getting-ready.html"><i class="fa fa-check"></i><b>2</b> Getting ready</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="getting-ready.html"><a href="getting-ready.html#visual-studio-code"><i class="fa fa-check"></i><b>2.1</b> Visual studio code</a>
-<ul>
-<li class="chapter" data-level="2.1.1" data-path="getting-ready.html"><a href="getting-ready.html#install-extensions"><i class="fa fa-check"></i><b>2.1.1</b> Install extensions</a></li>
-</ul></li>
-<li class="chapter" data-level="2.2" data-path="getting-ready.html"><a href="getting-ready.html#log-in-to-mjolnir"><i class="fa fa-check"></i><b>2.2</b> Log-in to Mjolnir</a></li>
-<li class="chapter" data-level="2.3" data-path="getting-ready.html"><a href="getting-ready.html#explore-directories"><i class="fa fa-check"></i><b>2.3</b> Explore directories</a>
-<ul>
-<li class="chapter" data-level="2.3.1" data-path="getting-ready.html"><a href="getting-ready.html#common-directory"><i class="fa fa-check"></i><b>2.3.1</b> Common directory</a></li>
-<li class="chapter" data-level="2.3.2" data-path="getting-ready.html"><a href="getting-ready.html#personal-directory"><i class="fa fa-check"></i><b>2.3.2</b> Personal directory</a></li>
-<li class="chapter" data-level="2.3.3" data-path="getting-ready.html"><a href="getting-ready.html#copy-files-to-you-personal-directory"><i class="fa fa-check"></i><b>2.3.3</b> Copy files to you personal directory</a></li>
-</ul></li>
-<li class="chapter" data-level="2.4" data-path="getting-ready.html"><a href="getting-ready.html#useful-aliases"><i class="fa fa-check"></i><b>2.4</b> Useful aliases</a></li>
-<li class="chapter" data-level="2.5" data-path="getting-ready.html"><a href="getting-ready.html#screen-session"><i class="fa fa-check"></i><b>2.5</b> Screen session</a></li>
-<li class="chapter" data-level="2.6" data-path="getting-ready.html"><a href="getting-ready.html#interactive-job"><i class="fa fa-check"></i><b>2.6</b> Interactive job</a></li>
-<li class="chapter" data-level="2.7" data-path="getting-ready.html"><a href="getting-ready.html#required-modules"><i class="fa fa-check"></i><b>2.7</b> Required modules</a></li>
-<li class="chapter" data-level="2.8" data-path="getting-ready.html"><a href="getting-ready.html#lets-go"><i class="fa fa-check"></i><b>2.8</b> Let’s go!</a></li>
+<li class="chapter" data-level="2.1" data-path="getting-ready.html"><a href="getting-ready.html#common-directory"><i class="fa fa-check"></i><b>2.1</b> Common directory</a></li>
+<li class="chapter" data-level="2.2" data-path="getting-ready.html"><a href="getting-ready.html#personal-directory"><i class="fa fa-check"></i><b>2.2</b> Personal directory</a></li>
+<li class="chapter" data-level="2.3" data-path="getting-ready.html"><a href="getting-ready.html#useful-aliases"><i class="fa fa-check"></i><b>2.3</b> Useful aliases</a></li>
+<li class="chapter" data-level="2.4" data-path="getting-ready.html"><a href="getting-ready.html#required-modules"><i class="fa fa-check"></i><b>2.4</b> Required modules</a></li>
+<li class="chapter" data-level="2.5" data-path="getting-ready.html"><a href="getting-ready.html#lets-go"><i class="fa fa-check"></i><b>2.5</b> Let’s go!</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="snakemake-basics.html"><a href="snakemake-basics.html"><i class="fa fa-check"></i><b>3</b> Snakemake basics</a>
 <ul>
@@ -2058,46 +2047,10 @@ color: #a52929;
 <li class="chapter" data-level="3.2" data-path="snakemake-basics.html"><a href="snakemake-basics.html#the-rules"><i class="fa fa-check"></i><b>3.2</b> The rules</a>
 <ul>
 <li class="chapter" data-level="3.2.1" data-path="snakemake-basics.html"><a href="snakemake-basics.html#the-all-rule"><i class="fa fa-check"></i><b>3.2.1</b> The ALL rule</a></li>
-<li class="chapter" data-level="3.2.2" data-path="snakemake-basics.html"><a href="snakemake-basics.html#a-regular-rule"><i class="fa fa-check"></i><b>3.2.2</b> A regular rule</a></li>
+<li class="chapter" data-level="3.2.2" data-path="snakemake-basics.html"><a href="snakemake-basics.html#the-regular-rules"><i class="fa fa-check"></i><b>3.2.2</b> The regular rules</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="snakemake-basics.html"><a href="snakemake-basics.html#linking-rules-together"><i class="fa fa-check"></i><b>3.3</b> Linking rules together</a></li>
-<li class="chapter" data-level="3.4" data-path="snakemake-basics.html"><a href="snakemake-basics.html#executing-the-pipeline"><i class="fa fa-check"></i><b>3.4</b> Executing the pipeline</a></li>
-<li class="chapter" data-level="3.5" data-path="snakemake-basics.html"><a href="snakemake-basics.html#previsualising-the-pipeline"><i class="fa fa-check"></i><b>3.5</b> Previsualising the pipeline</a></li>
-<li class="chapter" data-level="3.6" data-path="snakemake-basics.html"><a href="snakemake-basics.html#exercise-1"><i class="fa fa-check"></i><b>3.6</b> Exercise 1</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html"><i class="fa fa-check"></i><b>4</b> Expanding your workflow</a>
-<ul>
-<li class="chapter" data-level="4.1" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html#standard-workflow-structure"><i class="fa fa-check"></i><b>4.1</b> Standard workflow structure</a></li>
-<li class="chapter" data-level="4.2" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html#configuration-files"><i class="fa fa-check"></i><b>4.2</b> Configuration files</a>
-<ul>
-<li class="chapter" data-level="4.2.1" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html#using-config-information"><i class="fa fa-check"></i><b>4.2.1</b> Using config information</a></li>
-</ul></li>
-<li class="chapter" data-level="4.3" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html#modularisation-of-the-snakefile"><i class="fa fa-check"></i><b>4.3</b> Modularisation of the Snakefile</a></li>
-<li class="chapter" data-level="4.4" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html#using-custom-environments"><i class="fa fa-check"></i><b>4.4</b> Using custom environments</a>
-<ul>
-<li class="chapter" data-level="4.4.1" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html#hpc-environment-modules"><i class="fa fa-check"></i><b>4.4.1</b> HPC environment modules</a></li>
-<li class="chapter" data-level="4.4.2" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html#conda-environments"><i class="fa fa-check"></i><b>4.4.2</b> Conda environments</a></li>
-<li class="chapter" data-level="4.4.3" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html#other-compartimentalisation-options"><i class="fa fa-check"></i><b>4.4.3</b> Other compartimentalisation options</a></li>
-</ul></li>
-<li class="chapter" data-level="4.5" data-path="expanding-your-workflow.html"><a href="expanding-your-workflow.html#exercise-2"><i class="fa fa-check"></i><b>4.5</b> Exercise 2</a></li>
-</ul></li>
-<li class="chapter" data-level="5" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html"><i class="fa fa-check"></i><b>5</b> Advanced rule parameters</a>
-<ul>
-<li class="chapter" data-level="5.1" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#params"><i class="fa fa-check"></i><b>5.1</b> Params</a></li>
-<li class="chapter" data-level="5.2" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#threads"><i class="fa fa-check"></i><b>5.2</b> Threads</a></li>
-<li class="chapter" data-level="5.3" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#resources"><i class="fa fa-check"></i><b>5.3</b> Resources</a></li>
-<li class="chapter" data-level="5.4" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#attempts"><i class="fa fa-check"></i><b>5.4</b> Attempts</a></li>
-<li class="chapter" data-level="5.5" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#dynamic-resources"><i class="fa fa-check"></i><b>5.5</b> Dynamic resources</a></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="advanced-inputs.html"><a href="advanced-inputs.html"><i class="fa fa-check"></i><b>6</b> Advanced inputs</a>
-<ul>
-<li class="chapter" data-level="6.1" data-path="advanced-inputs.html"><a href="advanced-inputs.html#expansions"><i class="fa fa-check"></i><b>6.1</b> Expansions</a></li>
-<li class="chapter" data-level="6.2" data-path="advanced-inputs.html"><a href="advanced-inputs.html#pattern-building-helpers"><i class="fa fa-check"></i><b>6.2</b> Pattern-building helpers</a></li>
-<li class="chapter" data-level="6.3" data-path="advanced-inputs.html"><a href="advanced-inputs.html#wildcards"><i class="fa fa-check"></i><b>6.3</b> Wildcards</a></li>
-<li class="chapter" data-level="6.4" data-path="advanced-inputs.html"><a href="advanced-inputs.html#exercise-3"><i class="fa fa-check"></i><b>6.4</b> Exercise 3</a></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="checkpoints.html"><a href="checkpoints.html"><i class="fa fa-check"></i><b>7</b> Checkpoints</a></li>
-<li class="chapter" data-level="8" data-path="slurm-integration.html"><a href="slurm-integration.html"><i class="fa fa-check"></i><b>8</b> Slurm integration</a></li>
+<li class="chapter" data-level="4" data-path="rule-basics.html"><a href="rule-basics.html"><i class="fa fa-check"></i><b>4</b> Rule basics</a></li>
 <li class="divider"></li>
 <li><a href="https://www.alberdilab.dk" target="blank"><b>www.alberdilab.dk</b></a></li>
 <li><a href="https://www.earthhologenome.org" target="blank"><b>www.earthhologenome.org</b></a></li>
@@ -2120,65 +2073,31 @@ color: #a52929;
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Pipeline management with Snakemake</h1>
-<h2 class="subtitle"><em>Section for Hologenomics Workshop</em></h2>
-<p class="author"><em>Antton Alberdi<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></em></p>
-<p class="date"><em>Last update: 2025-08-17</em></p>
-</div>
-<div id="introduction" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><strong>Welcome to the Snakemake Workshop!</strong></p>
-<p>In this session, we’ll explore how Snakemake can help you build scalable, reproducible, and automated workflows for data analysis. You’ll learn how to define tasks as rules, manage dependencies, and take full advantage of parallel execution on a high-performance cluster. By the end, you’ll be able to design workflows that are not only efficient, but also easy to share and reproduce.</p>
-<div id="what-is-snakemake" class="section level2 hasAnchor" number="1.1">
-<h2><span class="header-section-number">1.1</span> What is Snakemake?<a href="index.html#what-is-snakemake" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Snakemake is a workflow management system that helps you automate and organize complex data processing tasks. Instead of manually running each step of an analysis in the correct order, you describe what needs to be done, the inputs it requires, and the outputs it should produce. Snakemake then determines the correct execution order, runs tasks in parallel where possible, and ensures that only the necessary steps are re-run when data or code changes.</p>
-<p>This approach makes your work more efficient, reproducible, and less prone to errors, whether you are working on a single computer or a high-performance computing cluster. In simple terms, it is like providing your computer with a detailed recipe: each step knows exactly which ingredients it needs, what it produces, and when it needs to be executed.</p>
-</div>
-<div id="why-workflow-automation-matters" class="section level2 hasAnchor" number="1.2">
-<h2><span class="header-section-number">1.2</span> Why Workflow Automation Matters<a href="index.html#why-workflow-automation-matters" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><strong>Reproducibility:</strong> In research and data-driven projects, results must be repeatable. Automation ensures that the same steps produce the same results every time, regardless of who runs them or where they are run.</li>
-<li><strong>Efficiency:</strong> Automated workflows save time by eliminating repetitive manual commands and by re-running only the parts of an analysis that have changed.</li>
-<li><strong>Error Reduction:</strong> Manual execution increases the risk of skipping steps, running them in the wrong order, or using outdated files. Automation enforces the correct sequence and data flow.</li>
-<li><strong>Scalability:</strong> As projects grow, the number of steps and datasets can become unmanageable. Automated workflows make it practical to handle dozens or hundreds of tasks reliably.</li>
-<li><strong>Documentation by Design:</strong> A well-defined workflow doubles as a detailed record of the entire analysis process, which is invaluable for collaboration, review, and publication.</li>
-</ul>
-</div>
-<div id="problems-snakemake-solves" class="section level2 hasAnchor" number="1.3">
-<h2><span class="header-section-number">1.3</span> Problems Snakemake Solves<a href="index.html#problems-snakemake-solves" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><strong>Managing Complex Dependenciess:</strong> Snakemake automatically determines which steps depend on which others and runs them in the right order without manual intervention.</li>
-<li><strong>Avoiding Unnecessary Work:</strong> It detects when inputs or code have changed and re-runs only the affected steps, saving both time and computing resources.</li>
-<li><strong>Portability Across Systems:</strong> The same workflow can run unchanged on a laptop, a high-performance computing cluster, or even the cloud.</li>
-<li><strong>Parallel Execution Without Extra Effort:</strong> Snakemake can execute independent tasks simultaneously, using all available cores or cluster nodes.</li>
-<li><strong>Reproducibility and Transparency:</strong> By defining workflows in a readable text format, Snakemake makes analyses easy to share, inspect, and reproduce years later.</li>
-</ul>
-</div>
-<div id="relevant-links" class="section level2 hasAnchor" number="1.4">
-<h2><span class="header-section-number">1.4</span> Relevant links<a href="index.html#relevant-links" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li>Official Snakemake website: <a href="https://snakemake.github.io" class="uri">https://snakemake.github.io</a></li>
-<li>Snakemake documentation: <a href="https://snakemake.readthedocs.io" class="uri">https://snakemake.readthedocs.io</a></li>
-<li>Tutorial with examples: <a href="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html" class="uri">https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html</a></li>
-<li>Workflow examples: <a href="https://github.com/snakemake-workflows" class="uri">https://github.com/snakemake-workflows</a></li>
-</ul>
+<div id="rule-basics" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Rule basics<a href="rule-basics.html#rule-basics" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Explanation</p>
+<pre><code>rule count_lines:
+  input:
+    &quot;data/sample1.txt&quot;
+  output:
+    &quot;results/sample1.txt&quot;
+  shell:
+    &quot;wc -l {input} | awk &#39;{{print $1}}&#39; &gt; {output}&quot;</code></pre>
 
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="1">
-<li id="fn1"><p>University of Copenhagen, <a href="mailto:ostaizka.aizpurua@sund.ku.dk" class="email">ostaizka.aizpurua@sund.ku.dk</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-</ol>
-</div>
+
+
+
+
+
+
             </section>
 
           </div>
         </div>
       </div>
+<a href="snakemake-basics.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="getting-ready.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script>/*! jQuery v3.6.0 | (c) OpenJS Foundation and other contributors | jquery.org/license */
