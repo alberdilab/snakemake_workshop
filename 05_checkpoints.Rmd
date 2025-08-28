@@ -1,0 +1,75 @@
+# Checkpoints
+
+Normally, Snakemake needs to know all inputs in advance so it can plan the DAG. But sometimes you don’t know the inputs until after another rule has run — e.g.:
+
+- You split a file into an unknown number of chunks.
+- You download a dataset whose contents aren’t known upfront.
+- You parse a metadata file that wasn’t available when you wrote the workflow.
+
+This is where checkpoints come in.
+
+- A checkpoint is like a rule, but Snakemake pauses the DAG here.
+- After the checkpoint runs, you can dynamically discover its outputs.
+- Then you can use a dynamic input function to create follow-up jobs.
+
+Checkpoints are defined by using `checkpoint` rather than `rule`.
+
+```{sh eval=FALSE}
+checkpoint split_file:
+    input:
+        "data/largefile.txt"
+    output:
+        directory("chunks")
+    shell:
+        """
+        mkdir -p {output}
+        split -l 1000 {input} {output}/part_
+        """
+```
+
+As a result, we should expect an unknown number of files within the folder 'chunks'. To process each of them one by one, we need to use wildcards. 
+
+```{sh eval=FALSE}
+rule process_chunk:
+    input:
+        "chunks/{chunk}"
+    output:
+        "processed/{chunk}.out"
+    shell:
+        "wc -l {input} > {output}"
+```
+
+However, snakemake is still unable to guess what the wildcards, until we provide the required information to create the updated DAG. The way to do this, is to define a functions that gathers the newly created files' names.
+
+```{sh eval=FALSE}
+def chunk_ids():
+    ck = checkpoints.split_file.get() #Ensure split_file has run, and gets the output directory
+    ids = glob_wildcards(join(ck.output[0], "{chunk}")).chunk # Gets file id's from the output directory
+    return ids
+```
+
+This function, which is executed in the following rule, creates a python list like '["part_aa", "part_ab"]', which is used to generate the updated DAG.
+
+```{sh eval=FALSE}
+rule merge_results:
+    input:
+        lambda wc: expand("processed/{chunk}.out", chunk=chunk_ids())
+    output:
+        "results/merged.txt"
+    shell:
+        "cat {input} > {output}"
+
+rule all:
+    input:
+        "results/merged.txt"
+```
+
+## Exercise 4
+
+<!--
+- imports are not defined:
+    from os.path import join
+    from snakemake.io import glob_wildcards
+- expand is missing the list
+  , chunk=chunk_ids()
+-->

@@ -1,3 +1,0 @@
-# Slurm integration
-
-## Exercise 6

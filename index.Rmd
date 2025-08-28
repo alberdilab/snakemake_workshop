@@ -43,7 +43,7 @@ This approach makes your work more efficient, reproducible, and less prone to er
 
 ## Problems Snakemake Solves
 
-- **Managing Complex Dependenciess:** Snakemake automatically determines which steps depend on which others and runs them in the right order without manual intervention.
+- **Managing Complex Dependencies:** Snakemake automatically determines which steps depend on which others and runs them in the right order without manual intervention.
 - **Avoiding Unnecessary Work:** It detects when inputs or code have changed and re-runs only the affected steps, saving both time and computing resources.
 - **Portability Across Systems:** The same workflow can run unchanged on a laptop, a high-performance computing cluster, or even the cloud.
 - **Parallel Execution Without Extra Effort:** Snakemake can execute independent tasks simultaneously, using all available cores or cluster nodes.

@@ -1,0 +1,230 @@
+# SLURM integration
+
+SLURM (Simple Linux Utility for Resource Management) is a widely used open-source job scheduler and workload manager for high-performance computing (HPC) clusters.
+It handles three main tasks:
+
+- **Resource allocation** deciding which jobs run on which nodes.
+- **Job scheduling** prioritising and queuing jobs.
+- **Job execution** launching and monitoring jobs across compute nodes.
+
+Snakemake can submit workflow rules directly to SLURM. When a rule is executed this way, Snakemake doesn’t run the job itself; instead, it generates an sbatch command with the appropriate resource requests and submits it to SLURM. From Snakemake 8 onwards, it requires installation of the (executor plugin)[https://anaconda.org/bioconda/snakemake-executor-plugin-slurm].
+
+## Examples
+
+Standalone example:
+- https://github.com/alberdilab/genotyping
+
+Integrated in installable software:
+- https://github.com/alberdilab/barcodemapper
+
+## Defining resources
+
+**resources** declare arbitrary, countable things a rule needs to run (memory, GPUs, disk, time, etc.). When executing Snakemake with SLURM it is essential to define the resources that will be used for each job, so that SLURM can properly allocated resources and prioritise jobs in the queue.
+
+```{sh eval=FALSE}
+rule variant_calling:
+    input:
+        "results/sample.sorted.bam"
+    output:
+        "results/sample.vcf"
+    threads: 8
+    resources:
+        mem_mb=16000,
+        runtime=10
+    shell:
+        "freebayes -f ref/genome.fasta {input} > {output}"
+```
+
+- `resources: mem_mb=16000` indicates that the job needs 16 GB RAM.
+- `resources: runtime=10` indicates that the job must be done within 10 minutes.
+
+## Attempts
+
+Some jobs fail occasionally for reasons outside your workflow. This is usually because the job required more memory than allocated, or more time than specified to accomplish the task. In the case of downloads from the internet, it could also be because the connection failed.
+
+`attempts` lets you tell Snakemake: “If this rule fails, try again up to N times before stopping”. For example, if a rule is declared to download a file from the internet and the connection fails, snakemake will try up to three times to accomplish the task. The number of attempts can be declared for each rule:
+
+```{sh eval=FALSE}
+rule variant_calling:
+    input:
+        "results/sample.sorted.bam"
+    output:
+        "results/sample.vcf"
+    resources:
+        mem_mb=16000,
+        runtime=10
+    attempts: 3
+    shell:
+        "freebayes -f ref/genome.fasta {input} > {output}"
+```
+
+Or a global number of attempts can be defined using the flag --retries.
+
+```{sh eval=FALSE}
+snakemake --retries 3
+```
+
+## Dynamic resources
+
+When using Snakemake on an HPC with a queuing system, job failures often come from insufficient resources. To better address this issue, Snakemake can adjust resources dynamically on each try by specifying rules for scaling.
+
+```{sh eval=FALSE}
+rule variant_calling:
+    input:
+        "results/sample.sorted.bam"
+    output:
+        "results/sample.vcf"
+    threads: 8
+    attempts: 3
+    resources:
+        mem_mb=lambda wildcards, attempt: 4000 * attempt,
+        runtime=lambda wildcard, sattempt: 10 * attempt
+    shell:
+        "freebayes -f ref/genome.fasta {input} > {output}"
+```
+
+In the above example:
+
+- First attempt: 4000 Mb of memory and 10 minutes
+- Second attempt: 8000 Mb of memory and 20 minutes
+- Third attempt: 12000 Mb of memory and 30 minutes
+
+The scaling can also be exponential using the following function:
+
+```{sh eval=FALSE}
+rule variant_calling:
+    input:
+        "results/sample.sorted.bam"
+    output:
+        "results/sample.vcf"
+    threads: 8
+    attempts: 3
+    resources:
+        mem_mb=lambda wildcards, attempt: 4000 * 2 ** (attempt - 1),
+        runtime=lambda wildcard, attempt: 10 * 2 ** (attempt - 1)
+    shell:
+        "freebayes -f ref/genome.fasta {input} > {output}"
+```
+
+In the new example, the resources will double in every attempt:
+
+- First attempt: 4000*2^0 = 4000 Mb of memory and 10 minutes
+- Second attempt: 4000*2^1 = 8000 Mb of memory and 20 minutes
+- Third attempt: 4000*2^2 = 16000 Mb of memory and 40 minutes
+
+However, the required resources can vary significantly within project: some input files might be 10 Mb, while others 100 Mb, requiring many more resources. The `input.size_mb` options allows for calculating the resources based on the size of the input files:
+
+```{sh eval=FALSE}
+rule variant_calling:
+    input:
+        "results/sample.sorted.bam"
+    output:
+        "results/sample.vcf"
+    threads: 8
+    attempts: 3
+    resources:
+        mem_mb=lambda wildcards, input, attempt: max(64*1024, int(input.size_mb * 10) * 2 ** (attempt - 1)),
+        runtime=lambda wildcards, input, attempt: max(15, int(input.size_mb / 50) * 2 ** (attempt - 1))
+    shell:
+        "freebayes -f ref/genome.fasta {input} > {output}"
+```
+
+When defining such dynamic resources, it's not uncommon to require resources that are two small or so big that cannot be satisfied. The functions max() and min() enable setting minimum and maximum values within the resources can fluctuate.
+
+```{sh eval=FALSE}
+rule variant_calling:
+    input:
+        "results/sample.sorted.bam"
+    output:
+        "results/sample.vcf"
+    threads: 8
+    attempts: 3
+    resources:
+        mem_mb=lambda wildcards, input, attempt: max(64*1024, int(input.size_mb * 10) * 2 ** (attempt - 1)),
+        runtime=lambda wildcards, input, attempt: min(1440, int(input.size_mb / 50) * 2 ** (attempt - 1))
+    shell:
+        "freebayes -f ref/genome.fasta {input} > {output}"
+```
+
+In the above example, the minimum amount of memory is set to 64 Gb. If the dynamic calculation is below that number, 64 Gb will be used instead. The maximum amount of time is set to 1440 minutes (a day). If the dynamic calculation exceds that number, the minimum value will be used, that is 1440.
+
+## Executing Snakemake with SLURM
+
+### Direct specification
+
+```{sh eval=FALSE}
+snakemake --executor slurm
+```
+
+### Profile specification
+
+This option gives you much more control over how to execute Snakemake jobs via SLURM.
+
+#### Create profile config 
+
+1. Prepare a profile config file specifying slurm execution
+
+- profile/slurm/config.yaml
+
+```{sh eval=FALSE}
+executor: slurm
+jobs: 50
+latency-wait: 60
+use-conda: true
+rerun-incomplete: true
+rerun-trigger: mtime
+keep-going: false
+retries: 3
+
+default-resources:
+    mem_mb: 8 * 1024
+    runtime: 10 * 2 ** (attempt - 1)
+max-threads: 8
+```
+
+In addition to the default resources, it is also possible to define rule-specific resources in the profile.
+
+```{sh eval=FALSE}
+executor: slurm
+jobs: 50
+latency-wait: 60
+use-conda: true
+rerun-incomplete: true
+rerun-trigger: mtime
+keep-going: false
+retries: 3
+
+default-resources:
+    mem_mb: 8 * 1024
+    runtime: 10 * 2 ** (attempt - 1)
+max-threads: 8
+
+set-threads:
+    variant_calling: 8
+
+set-resources:
+    variant_calling:
+        mem_mb: 32 * 1024 * 2 ** (attempt - 1)
+        runtime: 12 * 2 ** (attempt - 1)
+```
+
+#### Execute Snakemake with profile
+
+```{sh eval=FALSE}
+snakemake --workflow-profile profile/slurm
+```
+
+## Exercise 5
+
+Generate the following output files by fixing the mistakes in the snakefile:
+
+- distance_matrix.txt
+- pcoa.png
+- heatmap.png
+- depth.tsv
+
+<!--
+- imports are not defined:
+- SAMPLES capture is missing
+- script directories are not correct
+-->

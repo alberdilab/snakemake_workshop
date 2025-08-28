@@ -1,60 +1,36 @@
 # Getting ready
 
-## Visual studio code
+## Get Visual Studio Code ready
 
-### Install extensions
+Visual Studio Code (VS Code) is a lightweight, cross-platform code editor developed by Microsoft. It’s free, open source, and supports a wide range of programming languages.
 
-- Python 
-- Snakemake Language
-- Remote - SSH
-- Remote Explorer
+1. Download Visual studio code: https://code.visualstudio.com/download
+2. Using the extension manager, install the following plugins:
+- **Python** by Microsoft
+- **Snakemake Language** by Snakemake
+- **Remote - SSH** by Microsoft
+- **Remote Explorer** by Microsoft
 
-## Log-in to Mjolnir
+## Create a SSH connection to Mjolnir
 
-As this tutorial needs to be valid for all participants, we will start by defining our user id by changing `jpl786` to your personal KU-id in this example
+1. Ensure you are connected to the KU VPN
+2. Menu: View > Command Palette > Remote-SSH: Connect to Host
+3. + Add New SSH Host
+4. ssh mjolnirgate.unicph.domain
+5. Type password
 
-```{sh eval=FALSE}
-user="jpl786"
-```
+This should have created a SSH connection to Mjolnir, which will enable you to create a Remote Explorewr.
 
-This workshop is prepared to be run in the Globe HPC Mjolnir. So, let's connect to the server.
+## Open the remote explorer
 
-```{sh eval=FALSE}
-ssh ${user}@mjolnirgate.unicph.domain
-```
+1. Explorer
+2. Connect to remote > Open Folder
+3. Use the following path: /maps/projects/course_2/people/{your_ku_id}
 
-We will need to define our user-id once again, this time in the remote server.
-
-```{sh eval=FALSE}
-user="jpl786"
-```
-
-## Explore directories
-
-First of all, we will explore the two most relevant directories for this workshop.
-
-### Common directory
-
-This directory contains all the relevant files needed for the workshop.
+## Copy exercise files to your personal directory
 
 ```{sh eval=FALSE}
-ls -lah /projects/course_2/data
-```
-
-### Personal directory
-
-This is where all your operations will happen.
-
-```{sh eval=FALSE}
-ls -lah  /projects/course_2/people/${user}
-```
-
-### Copy files to you personal directory
-
-All the files in the common directory will be copied to your personal directory.
-
-```{sh eval=FALSE}
-cp -r /projects/course_2/data /projects/course_2/people/${user}
+cp -r /maps/projects/course_2/data/* .
 ```
 
 ## Useful aliases
@@ -62,8 +38,6 @@ cp -r /projects/course_2/data /projects/course_2/people/${user}
 Let's declare some useful aliases to make the work a bit more pleasant. 
 
 ```{sh eval=FALSE}
-cd /projects/course_2/people/${user}
-
 # Generate the file containing the aliases
 cat <<EOF > aliases
 alias myjobs='squeue -u ${user} --format="%.18i %.9P %.30j %.8u %.8T %.10M %.9l %.6m %k" --me'
@@ -111,13 +85,29 @@ mjolnirgate01fl.unicph.domain
 In this workshop, each participant will get allocated 4 CPUs and 16GB of memory at node mjolnircomp14fl. When that time is over, the session will close automatically.
 
 ```{sh eval=FALSE}
-srun --nodes=1 --job-name=snakemake_workshop --ntasks-per-node=4 --time=08:00:00 --mem=16G --pty bash -i
+srun \
+  --job-name=snakemake_workshop \
+  --account=teaching \
+  --reservation=snakemake_hackaton \
+  --partition=cpuqueue \
+  --nodes=1 \
+  --nodelist=mjolnircomp14fl \
+  --time=08:00:00 \
+  --mem=16G \
+  --cpus-per-task=4 \
+  --pty bash -I
+```
+
+This will display for a few seconds, after which you will get connected to the computation node.
+
+```
+srun: job XXXXXXXXX queued and waiting for resources
 ```
 
 To verify you are in the computing node the `hostname` command should now display:
 
 ```
-mjolnirgate14fl.unicph.domain
+mjolnircomp14fl.unicph.domain
 ```
 
 To exit the interactive job, just type `exit`.

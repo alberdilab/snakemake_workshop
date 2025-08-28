@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 7 Checkpoints | Pipeline management with Snakemake</title>
+  <title>Chapter 6 Checkpoints | Pipeline management with Snakemake</title>
   <meta name="description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 7 Checkpoints | Pipeline management with Snakemake" />
+  <meta property="og:title" content="Chapter 6 Checkpoints | Pipeline management with Snakemake" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   <meta name="github-repo" content="alberdilab/snakemake_workshop" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 7 Checkpoints | Pipeline management with Snakemake" />
+  <meta name="twitter:title" content="Chapter 6 Checkpoints | Pipeline management with Snakemake" />
   
   <meta name="twitter:description" content="&lt;p&gt;Workshop tutorial.&lt;/p&gt;" />
   
@@ -29,7 +29,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="advanced-inputs.html"/>
+<link rel="prev" href="advanced-rule-parameters.html"/>
 <link rel="next" href="slurm-integration.html"/>
 
 
@@ -2035,22 +2035,15 @@ color: #a52929;
 </ul></li>
 <li class="chapter" data-level="2" data-path="getting-ready.html"><a href="getting-ready.html"><i class="fa fa-check"></i><b>2</b> Getting ready</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="getting-ready.html"><a href="getting-ready.html#visual-studio-code"><i class="fa fa-check"></i><b>2.1</b> Visual studio code</a>
-<ul>
-<li class="chapter" data-level="2.1.1" data-path="getting-ready.html"><a href="getting-ready.html#install-extensions"><i class="fa fa-check"></i><b>2.1.1</b> Install extensions</a></li>
-</ul></li>
-<li class="chapter" data-level="2.2" data-path="getting-ready.html"><a href="getting-ready.html#log-in-to-mjolnir"><i class="fa fa-check"></i><b>2.2</b> Log-in to Mjolnir</a></li>
-<li class="chapter" data-level="2.3" data-path="getting-ready.html"><a href="getting-ready.html#explore-directories"><i class="fa fa-check"></i><b>2.3</b> Explore directories</a>
-<ul>
-<li class="chapter" data-level="2.3.1" data-path="getting-ready.html"><a href="getting-ready.html#common-directory"><i class="fa fa-check"></i><b>2.3.1</b> Common directory</a></li>
-<li class="chapter" data-level="2.3.2" data-path="getting-ready.html"><a href="getting-ready.html#personal-directory"><i class="fa fa-check"></i><b>2.3.2</b> Personal directory</a></li>
-<li class="chapter" data-level="2.3.3" data-path="getting-ready.html"><a href="getting-ready.html#copy-files-to-you-personal-directory"><i class="fa fa-check"></i><b>2.3.3</b> Copy files to you personal directory</a></li>
-</ul></li>
-<li class="chapter" data-level="2.4" data-path="getting-ready.html"><a href="getting-ready.html#useful-aliases"><i class="fa fa-check"></i><b>2.4</b> Useful aliases</a></li>
-<li class="chapter" data-level="2.5" data-path="getting-ready.html"><a href="getting-ready.html#screen-session"><i class="fa fa-check"></i><b>2.5</b> Screen session</a></li>
-<li class="chapter" data-level="2.6" data-path="getting-ready.html"><a href="getting-ready.html#interactive-job"><i class="fa fa-check"></i><b>2.6</b> Interactive job</a></li>
-<li class="chapter" data-level="2.7" data-path="getting-ready.html"><a href="getting-ready.html#required-modules"><i class="fa fa-check"></i><b>2.7</b> Required modules</a></li>
-<li class="chapter" data-level="2.8" data-path="getting-ready.html"><a href="getting-ready.html#lets-go"><i class="fa fa-check"></i><b>2.8</b> Let’s go!</a></li>
+<li class="chapter" data-level="2.1" data-path="getting-ready.html"><a href="getting-ready.html#get-visual-studio-code-ready"><i class="fa fa-check"></i><b>2.1</b> Get Visual Studio Code ready</a></li>
+<li class="chapter" data-level="2.2" data-path="getting-ready.html"><a href="getting-ready.html#create-a-ssh-connection-to-mjolnir"><i class="fa fa-check"></i><b>2.2</b> Create a SSH connection to Mjolnir</a></li>
+<li class="chapter" data-level="2.3" data-path="getting-ready.html"><a href="getting-ready.html#open-the-remote-explorer"><i class="fa fa-check"></i><b>2.3</b> Open the remote explorer</a></li>
+<li class="chapter" data-level="2.4" data-path="getting-ready.html"><a href="getting-ready.html#copy-exercise-files-to-your-personal-directory"><i class="fa fa-check"></i><b>2.4</b> Copy exercise files to your personal directory</a></li>
+<li class="chapter" data-level="2.5" data-path="getting-ready.html"><a href="getting-ready.html#useful-aliases"><i class="fa fa-check"></i><b>2.5</b> Useful aliases</a></li>
+<li class="chapter" data-level="2.6" data-path="getting-ready.html"><a href="getting-ready.html#screen-session"><i class="fa fa-check"></i><b>2.6</b> Screen session</a></li>
+<li class="chapter" data-level="2.7" data-path="getting-ready.html"><a href="getting-ready.html#interactive-job"><i class="fa fa-check"></i><b>2.7</b> Interactive job</a></li>
+<li class="chapter" data-level="2.8" data-path="getting-ready.html"><a href="getting-ready.html#required-modules"><i class="fa fa-check"></i><b>2.8</b> Required modules</a></li>
+<li class="chapter" data-level="2.9" data-path="getting-ready.html"><a href="getting-ready.html#lets-go"><i class="fa fa-check"></i><b>2.9</b> Let’s go!</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="snakemake-basics.html"><a href="snakemake-basics.html"><i class="fa fa-check"></i><b>3</b> Snakemake basics</a>
 <ul>
@@ -2085,19 +2078,29 @@ color: #a52929;
 <ul>
 <li class="chapter" data-level="5.1" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#params"><i class="fa fa-check"></i><b>5.1</b> Params</a></li>
 <li class="chapter" data-level="5.2" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#threads"><i class="fa fa-check"></i><b>5.2</b> Threads</a></li>
-<li class="chapter" data-level="5.3" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#resources"><i class="fa fa-check"></i><b>5.3</b> Resources</a></li>
-<li class="chapter" data-level="5.4" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#attempts"><i class="fa fa-check"></i><b>5.4</b> Attempts</a></li>
-<li class="chapter" data-level="5.5" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#dynamic-resources"><i class="fa fa-check"></i><b>5.5</b> Dynamic resources</a></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="advanced-inputs.html"><a href="advanced-inputs.html"><i class="fa fa-check"></i><b>6</b> Advanced inputs</a>
+<li class="chapter" data-level="5.3" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#advanced-inputs"><i class="fa fa-check"></i><b>5.3</b> Advanced inputs</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="advanced-inputs.html"><a href="advanced-inputs.html#expansions"><i class="fa fa-check"></i><b>6.1</b> Expansions</a></li>
-<li class="chapter" data-level="6.2" data-path="advanced-inputs.html"><a href="advanced-inputs.html#pattern-building-helpers"><i class="fa fa-check"></i><b>6.2</b> Pattern-building helpers</a></li>
-<li class="chapter" data-level="6.3" data-path="advanced-inputs.html"><a href="advanced-inputs.html#wildcards"><i class="fa fa-check"></i><b>6.3</b> Wildcards</a></li>
-<li class="chapter" data-level="6.4" data-path="advanced-inputs.html"><a href="advanced-inputs.html#exercise-3"><i class="fa fa-check"></i><b>6.4</b> Exercise 3</a></li>
+<li class="chapter" data-level="5.3.1" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#expansions"><i class="fa fa-check"></i><b>5.3.1</b> Expansions</a></li>
+<li class="chapter" data-level="5.3.2" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#pattern-building-helpers"><i class="fa fa-check"></i><b>5.3.2</b> Pattern-building helpers</a></li>
+<li class="chapter" data-level="5.3.3" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#wildcards"><i class="fa fa-check"></i><b>5.3.3</b> Wildcards</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="checkpoints.html"><a href="checkpoints.html"><i class="fa fa-check"></i><b>7</b> Checkpoints</a></li>
-<li class="chapter" data-level="8" data-path="slurm-integration.html"><a href="slurm-integration.html"><i class="fa fa-check"></i><b>8</b> Slurm integration</a></li>
+<li class="chapter" data-level="5.4" data-path="advanced-rule-parameters.html"><a href="advanced-rule-parameters.html#exercise-3"><i class="fa fa-check"></i><b>5.4</b> Exercise 3</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="checkpoints.html"><a href="checkpoints.html"><i class="fa fa-check"></i><b>6</b> Checkpoints</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="checkpoints.html"><a href="checkpoints.html#exercise-4"><i class="fa fa-check"></i><b>6.1</b> Exercise 4</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="slurm-integration.html"><a href="slurm-integration.html"><i class="fa fa-check"></i><b>7</b> SLURM integration</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="slurm-integration.html"><a href="slurm-integration.html#examples"><i class="fa fa-check"></i><b>7.1</b> Examples</a></li>
+<li class="chapter" data-level="7.2" data-path="slurm-integration.html"><a href="slurm-integration.html#attempts"><i class="fa fa-check"></i><b>7.2</b> Attempts</a></li>
+<li class="chapter" data-level="7.3" data-path="slurm-integration.html"><a href="slurm-integration.html#dynamic-resources"><i class="fa fa-check"></i><b>7.3</b> Dynamic resources</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="slurm-integration.html"><a href="slurm-integration.html#direct-specification"><i class="fa fa-check"></i><b>7.3.1</b> Direct specification</a></li>
+<li class="chapter" data-level="7.3.2" data-path="slurm-integration.html"><a href="slurm-integration.html#profile-specification"><i class="fa fa-check"></i><b>7.3.2</b> Profile specification</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="slurm-integration.html"><a href="slurm-integration.html#exercise-5"><i class="fa fa-check"></i><b>7.4</b> Exercise 5</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://www.alberdilab.dk" target="blank"><b>www.alberdilab.dk</b></a></li>
 <li><a href="https://www.earthhologenome.org" target="blank"><b>www.earthhologenome.org</b></a></li>
@@ -2120,16 +2123,74 @@ color: #a52929;
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="checkpoints" class="section level1 hasAnchor" number="7">
-<h1><span class="header-section-number">Chapter 7</span> Checkpoints<a href="checkpoints.html#checkpoints" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="checkpoints" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> Checkpoints<a href="checkpoints.html#checkpoints" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Normally, Snakemake needs to know all inputs in advance so it can plan the DAG. But sometimes you don’t know the inputs until after another rule has run — e.g.:</p>
+<ul>
+<li>You split a file into an unknown number of chunks.</li>
+<li>You download a dataset whose contents aren’t known upfront.</li>
+<li>You parse a metadata file that wasn’t available when you wrote the workflow.</li>
+</ul>
+<p>This is where checkpoints come in.</p>
+<ul>
+<li>A checkpoint is like a rule, but Snakemake pauses the DAG here.</li>
+<li>After the checkpoint runs, you can dynamically discover its outputs.</li>
+<li>Then you can use a dynamic input function to create follow-up jobs.</li>
+</ul>
+<p>Checkpoints are defined by using <code>checkpoint</code> rather than <code>rule</code>.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb56-1"><a href="checkpoints.html#cb56-1" tabindex="-1"></a><span class="ex">checkpoint</span> split_file:</span>
+<span id="cb56-2"><a href="checkpoints.html#cb56-2" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb56-3"><a href="checkpoints.html#cb56-3" tabindex="-1"></a>        <span class="st">&quot;data/largefile.txt&quot;</span></span>
+<span id="cb56-4"><a href="checkpoints.html#cb56-4" tabindex="-1"></a>    <span class="ex">output:</span></span>
+<span id="cb56-5"><a href="checkpoints.html#cb56-5" tabindex="-1"></a>        <span class="ex">directory</span><span class="er">(</span><span class="st">&quot;chunks&quot;</span><span class="kw">)</span></span>
+<span id="cb56-6"><a href="checkpoints.html#cb56-6" tabindex="-1"></a>    <span class="ex">shell:</span></span>
+<span id="cb56-7"><a href="checkpoints.html#cb56-7" tabindex="-1"></a>        <span class="st">&quot;&quot;&quot;</span></span>
+<span id="cb56-8"><a href="checkpoints.html#cb56-8" tabindex="-1"></a><span class="st">        mkdir -p {output}</span></span>
+<span id="cb56-9"><a href="checkpoints.html#cb56-9" tabindex="-1"></a><span class="st">        split -l 1000 {input} {output}/part_</span></span>
+<span id="cb56-10"><a href="checkpoints.html#cb56-10" tabindex="-1"></a><span class="st">        &quot;&quot;&quot;</span></span></code></pre></div>
+<p>As a result, we should expect an unknown number of files within the folder ‘chunks’. To process each of them one by one, we need to use wildcards.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb57-1"><a href="checkpoints.html#cb57-1" tabindex="-1"></a><span class="ex">rule</span> process_chunk:</span>
+<span id="cb57-2"><a href="checkpoints.html#cb57-2" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb57-3"><a href="checkpoints.html#cb57-3" tabindex="-1"></a>        <span class="st">&quot;chunks/{chunk}&quot;</span></span>
+<span id="cb57-4"><a href="checkpoints.html#cb57-4" tabindex="-1"></a>    <span class="ex">output:</span></span>
+<span id="cb57-5"><a href="checkpoints.html#cb57-5" tabindex="-1"></a>        <span class="st">&quot;processed/{chunk}.out&quot;</span></span>
+<span id="cb57-6"><a href="checkpoints.html#cb57-6" tabindex="-1"></a>    <span class="ex">shell:</span></span>
+<span id="cb57-7"><a href="checkpoints.html#cb57-7" tabindex="-1"></a>        <span class="st">&quot;wc -l {input} &gt; {output}&quot;</span></span></code></pre></div>
+<p>However, snakemake is still unable to guess what the wildcards, until we provide the required information to create the updated DAG. The way to do this, is to define a functions that gathers the newly created files’ names.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb58-1"><a href="checkpoints.html#cb58-1" tabindex="-1"></a><span class="ex">def</span> chunk_ids<span class="er">(</span><span class="kw">)</span><span class="bu">:</span></span>
+<span id="cb58-2"><a href="checkpoints.html#cb58-2" tabindex="-1"></a>    <span class="ex">ck</span> = checkpoints.split_file.get<span class="er">(</span><span class="kw">)</span> <span class="co">#Ensure split_file has run, and gets the output directory</span></span>
+<span id="cb58-3"><a href="checkpoints.html#cb58-3" tabindex="-1"></a>    <span class="ex">ids</span> = glob_wildcards<span class="er">(</span><span class="fu">join</span><span class="er">(</span><span class="ex">ck.output[0],</span> <span class="st">&quot;{chunk}&quot;</span><span class="kw">))</span><span class="ex">.chunk</span> <span class="co"># Gets file id&#39;s from the output directory</span></span>
+<span id="cb58-4"><a href="checkpoints.html#cb58-4" tabindex="-1"></a>    <span class="cf">return</span> <span class="ex">ids</span></span></code></pre></div>
+<p>This function, which is executed in the following rule, creates a python list like ‘[“part_aa”, “part_ab”]’, which is used to generate the updated DAG.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode sh script-source"><code class="sourceCode bash"><span id="cb59-1"><a href="checkpoints.html#cb59-1" tabindex="-1"></a><span class="ex">rule</span> merge_results:</span>
+<span id="cb59-2"><a href="checkpoints.html#cb59-2" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb59-3"><a href="checkpoints.html#cb59-3" tabindex="-1"></a>        <span class="ex">lambda</span> wc: expand<span class="er">(</span><span class="st">&quot;processed/{chunk}.out&quot;</span><span class="ex">,</span> chunk=chunk_ids<span class="er">(</span><span class="kw">))</span></span>
+<span id="cb59-4"><a href="checkpoints.html#cb59-4" tabindex="-1"></a>    <span class="ex">output:</span></span>
+<span id="cb59-5"><a href="checkpoints.html#cb59-5" tabindex="-1"></a>        <span class="st">&quot;results/merged.txt&quot;</span></span>
+<span id="cb59-6"><a href="checkpoints.html#cb59-6" tabindex="-1"></a>    <span class="ex">shell:</span></span>
+<span id="cb59-7"><a href="checkpoints.html#cb59-7" tabindex="-1"></a>        <span class="st">&quot;cat {input} &gt; {output}&quot;</span></span>
+<span id="cb59-8"><a href="checkpoints.html#cb59-8" tabindex="-1"></a></span>
+<span id="cb59-9"><a href="checkpoints.html#cb59-9" tabindex="-1"></a><span class="ex">rule</span> all:</span>
+<span id="cb59-10"><a href="checkpoints.html#cb59-10" tabindex="-1"></a>    <span class="ex">input:</span></span>
+<span id="cb59-11"><a href="checkpoints.html#cb59-11" tabindex="-1"></a>        <span class="st">&quot;results/merged.txt&quot;</span></span></code></pre></div>
+<div id="exercise-4" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Exercise 4<a href="checkpoints.html#exercise-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!--
+- imports are not defined:
+    from os.path import join
+    from snakemake.io import glob_wildcards
+- expand is missing the list
+  , chunk=chunk_ids()
+-->
 
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="advanced-inputs.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="advanced-rule-parameters.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="slurm-integration.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>

@@ -41,136 +41,85 @@ rule sort_bam:
 - Inside shell:, you expand {threads} (not {params.threads}!).
 - If you launch Snakemake with snakemake `--cores 8`, Snakemake can only run two of these jobs at once (because each consumes 4 cores).
 
-## Resources
+## Advanced inputs
 
-**resources** declare arbitrary, countable things a rule needs to run (memory, GPUs, disk, time, etc.). Unlike params, Snakemake tracks them globally (like threads), so scheduling respects resource limits.
+### Expansions
+
+Use `expand()` to build input lists for the all rule or aggregations.
 
 ```{sh eval=FALSE}
-rule variant_calling:
+SAMPLES = ["S1", "S2", "S3"]
+
+rule all:
     input:
-        "results/sample.sorted.bam"
-    output:
-        "results/sample.vcf"
-    threads: 8
-    resources:
-        mem_mb=16000,
-        runtime=10
-    shell:
-        "freebayes -f ref/genome.fasta {input} > {output}"
+        expand("qc/{sample}_fastqc.html", sample=SAMPLES)
 ```
 
-- `resources: mem_mb=16000` indicates that the job needs 16 GB RAM.
-- `resources: runtime=10` indicates that the job must be done within 10 minutes.
-- Snakemake will schedule jobs so the total memory use never exceeds the limit you set with --resources.
-
-## Attempts
-
-Some jobs fail occasionally for reasons outside your workflow. `attempts` lets you tell Snakemake: “If this rule fails, try again up to N times before stopping”. For example, if a rule is declared to download a file from the internet and the connection fails, snakemake will try up to three times to accomplish the task. The number of attempts can be declared for each rule:
+The above code results in:
 
 ```{sh eval=FALSE}
-rule variant_calling:
+rule all:
     input:
-        "results/sample.sorted.bam"
-    output:
-        "results/sample.vcf"
-    resources:
-        mem_mb=16000,
-        runtime=10
-    attempts: 3
-    shell:
-        "freebayes -f ref/genome.fasta {input} > {output}"
+        "qc/S1_fastqc.html",
+        "qc/S2_fastqc.html",
+        "qc/S3_fastqc.html"
 ```
 
-Or a global number of attempts can be defined using the flag --retries.
+### Pattern-building helpers
+
+Use `glob_wildcards` to discover samples containing a certain pattern:
 
 ```{sh eval=FALSE}
-snakemake --retries 3
-```
+from snakemake.io import glob_wildcards
+SAMPLES = glob_wildcards("reads/{sample}.fastq.gz").sample
 
-## Dynamic resources
-
-When using Snakemake on an HPC with a queuing system, job failures often come from insufficient resources. To better address this issue,  Snakemake can adjust resources dynamically on each try by specifying rules for scaling.
-
-```{sh eval=FALSE}
-rule variant_calling:
+rule all:
     input:
-        "results/sample.sorted.bam"
-    output:
-        "results/sample.vcf"
-    threads: 8
-    attempts: 3
-    resources:
-        mem_mb=lambda wildcards, attempt: 4000 * attempt,
-        runtime=lambda wildcard, sattempt: 10 * attempt
-    shell:
-        "freebayes -f ref/genome.fasta {input} > {output}"
+        expand("qc/{sample}_fastqc.html", sample=SAMPLES)
 ```
 
-In the above example:
-
-- First attempt: 4000 Mb of memory and 10 minutes
-- Second attempt: 8000 Mb of memory and 20 minutes
-- Third attempt: 12000 Mb of memory and 30 minutes
-
-The scaling can also be exponential using the following function:
+Get a list of file names in the directory `reads` that end with `_1.fq.gz`:
 
 ```{sh eval=FALSE}
-rule variant_calling:
+from pathlib import Path
+SAMPLES = sorted({f.stem.rsplit("_", 1)[0] for f in Path("reads").glob("*_1.fq.gz")})
+
+rule all:
     input:
-        "results/sample.sorted.bam"
-    output:
-        "results/sample.vcf"
-    threads: 8
-    attempts: 3
-    resources:
-        mem_mb=lambda wildcards, attempt: 4000 * 2 ** (attempt - 1),
-        runtime=lambda wildcard, attempt: 10 * 2 ** (attempt - 1)
-    shell:
-        "freebayes -f ref/genome.fasta {input} > {output}"
+        expand("results/{sample}.tsv", sample=SAMPLES)
 ```
 
-In the new example, the resources will double in every attempt:
-
-- First attempt: 4000*2^0 = 4000 Mb of memory and 10 minutes
-- Second attempt: 4000*2^1 = 8000 Mb of memory and 20 minutes
-- Third attempt: 4000*2^2 = 16000 Mb of memory and 40 minutes
-
-However, the required resources can vary significantly within project: some input files might be 10 Mb, while others 100 Mb, requiring many more resources. The `input.size_mb` options allows for calculating the resources based on the size of the input files:
+### Wildcards
 
 ```{sh eval=FALSE}
-rule variant_calling:
+rule align:
     input:
-        "results/sample.sorted.bam"
+        lambda wc: [f"reads/{wc.sample}_R1.fastq.gz",
+                    f"reads/{wc.sample}_R2.fastq.gz"]
     output:
-        "results/sample.vcf"
-    threads: 8
-    attempts: 3
-    resources:
-        mem_mb=lambda wildcards, input, attempt: max(64*1024, int(input.size_mb * 10) * 2 ** (attempt - 1)),
-        runtime=lambda wildcards, input, attempt: max(15, int(input.size_mb / 50) * 2 ** (attempt - 1))
-    shell:
-        "freebayes -f ref/genome.fasta {input} > {output}"
+        "results/{sample}.bam"
 ```
-
-When defining such dynamic resources, it's not uncommon to require resources that are two small or so big that cannot be satisfied. The functions max() and min() enable setting minimum and maximum values within the resources can fluctuate.
-
-```{sh eval=FALSE}
-rule variant_calling:
-    input:
-        "results/sample.sorted.bam"
-    output:
-        "results/sample.vcf"
-    threads: 8
-    attempts: 3
-    resources:
-        mem_mb=lambda wildcards, input, attempt: max(64*1024, int(input.size_mb * 10) * 2 ** (attempt - 1)),
-        runtime=lambda wildcards, input, attempt: min(1440, int(input.size_mb / 50) * 2 ** (attempt - 1))
-    shell:
-        "freebayes -f ref/genome.fasta {input} > {output}"
-```
-
-In the above example, the minimum amount of memory is set to 64 Gb. If the dynamic calculation is below that number, 64 Gb will be used instead. The maximum amount of time is set to 1440 minutes (a day). If the dynamic calculation exceds that number, the minimum value will be used, that is 1440.
 
 ## Exercise 3
 
+In the directory `exercise3`, you will find a snakemake worflow  that requires you to use wildcards. Note this time the workflow requires the use of conda environments, so make sure you launch snakemake using:
 
+```{sh eval=FALSE}
+snakemake --use-conda
+```
+
+Try to fix it to get the output file `results/multiqc/report.html`.
+
+<!--
+- Missing SAMPLES definition
+    SAMPLES = sorted({
+    f.stem.rsplit("_", 1)[0]
+    for f in Path("reads").glob("*_1.fq.gz")
+})
+
+- missing environmental modules
+    envmodules:
+        "fastp/0.24.0"
+    envmodules:
+        "multiqc"
+-->

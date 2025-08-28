@@ -45,11 +45,6 @@ use-conda: true
 rerun-incomplete: true
 keep-going: true
 retries: 3
-
-#Resources
-default-resources:
-    mem_mb: 16 * 1024 * 2 ** (attempt - 1)
-    runtime: 300 * 2 ** (attempt - 1)
 ```
 
 You can also chunk the configuration file by declaring child files:
@@ -156,6 +151,13 @@ rule align:
     shell:
         "fastqc -o results {input}"
 ```
+
+To use environment modules, it's necessary to use the `--use-conda` argument when launching snakemake:
+
+```{sh eval=FALSE}
+snakemake --use-envmodules
+```
+
 
 ### Conda environments
 

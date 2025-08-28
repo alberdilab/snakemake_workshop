@@ -77,6 +77,8 @@ Snakemake lets you describe input and output files in several convenient ways.
 ```{sh eval=FALSE}
 rule count_lines:
   input: "data/sample1.txt"
+  output: "refs/genome.fa.fai"
+  shell: "samtools faidx {input}"
 ```
 
 or
@@ -85,8 +87,10 @@ or
 rule count_lines:
   input: 
     "data/sample1.txt"
-  output: "refs/genome.fa.fai"
-  shell:  "samtools faidx {input}"
+  output: 
+    "refs/genome.fa.fai"
+  shell:  
+    "samtools faidx {input}"
 ```
 
 ##### Multiple unordered files
@@ -109,11 +113,11 @@ In this case, `{input}` expands to a space-separated list, this example resultin
 ```{sh eval=FALSE}
 rule count_lines:
   input:
-    read1="reads/{sample}_R1.fastq.gz",
-    read2="reads/{sample}_R2.fastq.gz",
+    read1="reads/sample1_R1.fastq.gz",
+    read2="reads/sample1_R2.fastq.gz",
     ref="refs/genome.fa"
   output:
-    bam="results/{sample}.bam"
+    bam="results/sample1.bam"
   shell:
     "bwa mem {input.ref} {input.read1} {input.read2} | "
     "samtools view -b -o {output.bam} 2> {log.err}"
@@ -149,7 +153,17 @@ rule count_lines:
     "results/sample1.txt"
   shell:
     """
-    {add more complex command}
+    coverm genome \
+        -b {input} \
+         -s _ \
+         -m relative_abundance count \
+        --min-covered-fraction 0 \
+        > {output}
+
+    if [ $(stat -c '%s' {input}) -lt 1 ]
+     then
+     rm {input}
+    fi
     """
 ```
 
@@ -168,8 +182,7 @@ rule count_lines:
 
 ##### Run
 
-Or an inline Python block
-
+Or an inline Python block:
 
 ```{sh eval=FALSE}
 rule concat:
